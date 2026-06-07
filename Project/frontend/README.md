@@ -470,3 +470,5 @@ Agar tampilan aplikasi terasa sangat premium dan memukau:
 3. **Stepper Form**: UI input profil sebaiknya dibagi dalam format *Step-by-Step* (contoh: Step 1: Info Akademik -> Step 2: Level Keahlian [Slider] -> Step 3: Pengalaman & Preferensi) agar tidak mengintimidasi pengguna dengan formulir yang terlalu panjang.
 4. **Timeline Roadmap**: Visualisasikan `recommended_learning_order` dalam bentuk vertikal atau horizontal timeline yang menarik dengan ikon centang/belajar untuk memberikan kesan jalur petualangan (*gamified pathway*).
 5. **Micro-animations**: Gunakan library seperti `Framer Motion` untuk transisi antar halaman dan animasi kemunculan card rekomendasi.
+
+wowowowo
