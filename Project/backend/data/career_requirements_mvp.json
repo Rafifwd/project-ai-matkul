@@ -1,0 +1,751 @@
+{
+  "Data Scientist": {
+    "source_basis": {
+      "primary_onet_occupation": "Data Scientists",
+      "onet_code": "15-2051.00",
+      "source_url": "https://www.onetonline.org/link/summary/15-2051.00",
+      "notebook_data_note": "O*NET sections essential_skills, knowledge, and abilities were empty for this occupation in the scraped notebook data. Requirements are curated from O*NET tasks, work styles, and interest areas, then operationalized into student-facing skill fields."
+    },
+    "hard_skills": {
+      "statistics": 85,
+      "python": 80,
+      "data_cleaning": 80,
+      "machine_learning": 80,
+      "model_evaluation": 75,
+      "data_visualization": 75,
+      "research_methodology": 70
+    },
+    "soft_skills": [
+      "attention_to_detail",
+      "intellectual_curiosity",
+      "innovation",
+      "tolerance_for_ambiguity"
+    ],
+    "interests": [
+      "mathematics_statistics",
+      "information_technology",
+      "investigative"
+    ],
+    "related_courses": [
+      "Statistika",
+      "Aljabar Linear",
+      "Pemrograman",
+      "Kecerdasan Buatan",
+      "Data Mining"
+    ],
+    "portfolio": [
+      "End-to-end predictive modeling project with model evaluation",
+      "Data cleaning and visualization project using a public dataset"
+    ],
+    "learning_path": [
+      "Statistics fundamentals",
+      "Python for data analysis",
+      "Data cleaning and feature engineering",
+      "Machine learning model training",
+      "Model evaluation and communication"
+    ],
+    "resources": {
+      "free": [
+        "Kaggle Learn",
+        "Google Machine Learning Crash Course",
+        "fast.ai Practical Deep Learning"
+      ],
+      "paid": [
+        "Coursera Machine Learning Specialization",
+        "DataCamp Machine Learning track"
+      ]
+    },
+    "onet_evidence": {
+      "top_work_styles": [
+        "Attention to Detail: 100",
+        "Intellectual Curiosity: 100",
+        "Innovation: 81",
+        "Dependability: 79"
+      ],
+      "top_interest_areas": [
+        "Mathematics/Statistics: 98",
+        "Information Technology: 80"
+      ],
+      "representative_tasks": [
+        "Analyze, manipulate, or process large sets of data using statistical software.",
+        "Clean and manipulate raw data using statistical software.",
+        "Compare models using statistical performance metrics.",
+        "Create graphs, charts, or other visualizations to convey data analysis results."
+      ]
+    }
+  },
+  "Data Analyst": {
+    "source_basis": {
+      "primary_onet_occupation": "Business Intelligence Analysts",
+      "onet_code": "15-2051.01",
+      "source_url": "https://www.onetonline.org/link/summary/15-2051.01",
+      "notebook_data_note": "Used because the notebook contains strong O*NET evidence for reporting, dashboards, database updates, business intelligence tools, mathematics, and information technology."
+    },
+    "hard_skills": {
+      "statistics": 75,
+      "sql": 80,
+      "spreadsheet": 75,
+      "data_visualization": 80,
+      "business_understanding": 70,
+      "reporting": 75,
+      "python": 65
+    },
+    "soft_skills": [
+      "attention_to_detail",
+      "critical_thinking",
+      "communication",
+      "integrity"
+    ],
+    "interests": [
+      "information_technology",
+      "mathematics_statistics",
+      "conventional",
+      "investigative"
+    ],
+    "related_courses": [
+      "Statistika",
+      "Basis Data",
+      "Pemrograman",
+      "Sistem Informasi Manajemen",
+      "Analisis Bisnis"
+    ],
+    "portfolio": [
+      "Business dashboard with SQL-backed dataset",
+      "Public dataset analysis report with charts and recommendations"
+    ],
+    "learning_path": [
+      "Spreadsheet and basic statistics",
+      "SQL querying",
+      "Dashboard and data visualization",
+      "Business interpretation",
+      "Python for analysis"
+    ],
+    "resources": {
+      "free": [
+        "Mode SQL Tutorial",
+        "Kaggle Learn",
+        "Microsoft Power BI learning path"
+      ],
+      "paid": [
+        "Google Data Analytics Certificate",
+        "Udemy SQL and Data Analytics course"
+      ]
+    },
+    "onet_evidence": {
+      "top_knowledge": [
+        "Computers and Electronics: 82",
+        "Mathematics: 71",
+        "English Language: 69"
+      ],
+      "top_tasks": [
+        "Generate reports summarizing business, financial, or economic data: 91",
+        "Maintain or update BI tools, databases, dashboards, systems, or methods: 84",
+        "Manage timely flow of business intelligence information to users: 80",
+        "Create business intelligence tools or systems: 68"
+      ],
+      "top_work_styles": [
+        "Attention to Detail: 92",
+        "Integrity: 77",
+        "Dependability: 73"
+      ]
+    }
+  },
+  "Software Developer": {
+    "source_basis": {
+      "primary_onet_occupation": "Software Developers",
+      "onet_code": "15-1252.00",
+      "source_url": "https://www.onetonline.org/link/summary/15-1252.00",
+      "notebook_data_note": "Requirements are derived from O*NET evidence on computers and electronics, software requirements analysis, testing, programming, documentation, and system modification."
+    },
+    "hard_skills": {
+      "programming": 85,
+      "data_structures": 75,
+      "software_design": 75,
+      "database": 65,
+      "software_testing": 70,
+      "git": 65,
+      "requirements_analysis": 65
+    },
+    "soft_skills": [
+      "critical_thinking",
+      "attention_to_detail",
+      "innovation",
+      "dependability"
+    ],
+    "interests": [
+      "information_technology",
+      "mathematics_statistics",
+      "engineering",
+      "investigative"
+    ],
+    "related_courses": [
+      "Pemrograman",
+      "Struktur Data",
+      "Basis Data",
+      "Rekayasa Perangkat Lunak",
+      "Pengujian Perangkat Lunak"
+    ],
+    "portfolio": [
+      "CRUD web application with database",
+      "REST API or full-stack application with testing and documentation"
+    ],
+    "learning_path": [
+      "Programming fundamentals",
+      "Data structures and algorithms",
+      "Database and API basics",
+      "Software design and testing",
+      "Portfolio project with Git"
+    ],
+    "resources": {
+      "free": [
+        "freeCodeCamp",
+        "roadmap.sh",
+        "MDN Web Docs"
+      ],
+      "paid": [
+        "Dicoding developer learning path",
+        "Udemy Software Development course"
+      ]
+    },
+    "onet_evidence": {
+      "top_knowledge": [
+        "Computers and Electronics: 94",
+        "Mathematics: 64"
+      ],
+      "top_tasks": [
+        "Analyze user needs and software requirements: 77",
+        "Develop or direct software system testing or validation procedures: 73",
+        "Modify existing software to correct errors or improve performance: 69",
+        "Store, retrieve, and manipulate data for analysis of system capabilities: 65"
+      ],
+      "top_work_styles": [
+        "Attention to Detail: 89",
+        "Innovation: 84",
+        "Dependability: 80",
+        "Intellectual Curiosity: 78"
+      ]
+    }
+  },
+  "Cybersecurity Analyst": {
+    "source_basis": {
+      "primary_onet_occupation": "Information Security Analysts",
+      "onet_code": "15-1212.00",
+      "source_url": "https://www.onetonline.org/link/summary/15-1212.00",
+      "notebook_data_note": "Requirements are based on O*NET evidence for computer security plans, monitoring, encryption, firewall use, risk assessment, and security documentation."
+    },
+    "hard_skills": {
+      "networking": 75,
+      "security_fundamentals": 85,
+      "operating_systems": 70,
+      "linux": 65,
+      "risk_analysis": 75,
+      "log_analysis": 70,
+      "security_documentation": 65
+    },
+    "soft_skills": [
+      "attention_to_detail",
+      "integrity",
+      "cautiousness",
+      "perseverance"
+    ],
+    "interests": [
+      "information_technology",
+      "conventional",
+      "investigative"
+    ],
+    "related_courses": [
+      "Jaringan Komputer",
+      "Sistem Operasi",
+      "Keamanan Informasi",
+      "Manajemen Risiko TI"
+    ],
+    "portfolio": [
+      "Beginner security lab with documented risk assessment",
+      "CTF or log analysis write-up with mitigation recommendations"
+    ],
+    "learning_path": [
+      "Networking fundamentals",
+      "Operating system and Linux basics",
+      "Security fundamentals",
+      "Risk assessment and log analysis",
+      "Security documentation and portfolio"
+    ],
+    "resources": {
+      "free": [
+        "Cisco Networking Basics",
+        "TryHackMe free rooms",
+        "OWASP WebGoat"
+      ],
+      "paid": [
+        "CompTIA Security+",
+        "TryHackMe premium"
+      ]
+    },
+    "onet_evidence": {
+      "top_knowledge": [
+        "Computers and Electronics: 84",
+        "Engineering and Technology: 66",
+        "Telecommunications: 66"
+      ],
+      "top_tasks": [
+        "Develop plans to safeguard computer files: 85",
+        "Monitor current reports of computer viruses: 81",
+        "Encrypt data transmissions and erect firewalls: 80",
+        "Perform risk assessments and execute tests: 78"
+      ],
+      "top_work_styles": [
+        "Attention to Detail: 100",
+        "Integrity: 98",
+        "Cautiousness: 93",
+        "Dependability: 88"
+      ]
+    }
+  },
+  "Systems Analyst": {
+    "source_basis": {
+      "primary_onet_occupation": "Computer Systems Analysts",
+      "onet_code": "15-1211.00",
+      "source_url": "https://www.onetonline.org/link/summary/15-1211.00",
+      "notebook_data_note": "Used to represent a bridge role between business needs, software systems, support, testing, and system design."
+    },
+    "hard_skills": {
+      "systems_analysis": 80,
+      "requirements_analysis": 75,
+      "database": 65,
+      "programming": 60,
+      "software_testing": 70,
+      "troubleshooting": 80,
+      "business_understanding": 70
+    },
+    "soft_skills": [
+      "communication",
+      "critical_thinking",
+      "attention_to_detail",
+      "adaptability"
+    ],
+    "interests": [
+      "information_technology",
+      "investigative",
+      "conventional"
+    ],
+    "related_courses": [
+      "Analisis dan Perancangan Sistem",
+      "Basis Data",
+      "Rekayasa Perangkat Lunak",
+      "Sistem Informasi Manajemen"
+    ],
+    "portfolio": [
+      "System requirement specification document",
+      "Business process and system design case study"
+    ],
+    "learning_path": [
+      "Business process basics",
+      "Requirements gathering",
+      "System modeling",
+      "Database and testing basics",
+      "Case study documentation"
+    ],
+    "resources": {
+      "free": [
+        "Atlassian requirements gathering guides",
+        "Lucidchart system modeling guides",
+        "SQLBolt"
+      ],
+      "paid": [
+        "Udemy Systems Analysis course",
+        "IIBA ECBA preparation material"
+      ]
+    },
+    "onet_evidence": {
+      "top_knowledge": [
+        "Computers and Electronics: 91",
+        "Customer and Personal Service: 68"
+      ],
+      "top_tasks": [
+        "Troubleshoot program and system malfunctions: 81",
+        "Provide users assistance solving computer-related problems: 76",
+        "Test, maintain, and monitor computer programs and systems: 75",
+        "Analyze information processing or computation needs: 65"
+      ],
+      "top_work_styles": [
+        "Attention to Detail: 86",
+        "Intellectual Curiosity: 78",
+        "Innovation: 77"
+      ]
+    }
+  },
+  "Business Analyst": {
+    "source_basis": {
+      "primary_onet_occupation": "Management Analysts",
+      "onet_code": "13-1111.00",
+      "source_url": "https://www.onetonline.org/link/summary/13-1111.00",
+      "notebook_data_note": "Used as the closest O*NET basis for business analyst work: gathering information, analyzing procedures, developing solutions, and preparing recommendations."
+    },
+    "hard_skills": {
+      "business_understanding": 80,
+      "requirements_analysis": 80,
+      "process_modeling": 75,
+      "data_analysis": 70,
+      "spreadsheet": 70,
+      "report_writing": 75,
+      "stakeholder_analysis": 75
+    },
+    "soft_skills": [
+      "communication",
+      "critical_thinking",
+      "attention_to_detail",
+      "adaptability"
+    ],
+    "interests": [
+      "management_administration",
+      "business_initiatives",
+      "enterprising"
+    ],
+    "related_courses": [
+      "Analisis Proses Bisnis",
+      "Sistem Informasi Manajemen",
+      "Manajemen Proyek",
+      "Statistika Bisnis"
+    ],
+    "portfolio": [
+      "Business process improvement case study",
+      "Requirement document for a simple information system"
+    ],
+    "learning_path": [
+      "Business process understanding",
+      "Interview and requirement gathering",
+      "Process modeling",
+      "Data-supported recommendation",
+      "Business documentation"
+    ],
+    "resources": {
+      "free": [
+        "BA Times articles",
+        "Lucidchart process mapping guides",
+        "Atlassian project documentation guides"
+      ],
+      "paid": [
+        "IIBA ECBA preparation material",
+        "Udemy Business Analyst course"
+      ]
+    },
+    "onet_evidence": {
+      "top_knowledge": [
+        "Administration and Management: 85",
+        "Customer and Personal Service: 75",
+        "Mathematics: 66",
+        "Computers and Electronics: 63"
+      ],
+      "top_tasks": [
+        "Gather and organize information on problems or procedures: 87",
+        "Analyze data gathered and develop solutions: 86",
+        "Document findings and prepare recommendations: 81",
+        "Plan study of work problems and procedures: 78"
+      ],
+      "top_work_styles": [
+        "Attention to Detail: 87",
+        "Integrity: 77",
+        "Achievement Orientation: 76",
+        "Innovation: 75"
+      ]
+    }
+  },
+  "Project Manager": {
+    "source_basis": {
+      "primary_onet_occupation": "Project Management Specialists",
+      "onet_code": "13-1082.00",
+      "source_url": "https://www.onetonline.org/link/summary/13-1082.00",
+      "notebook_data_note": "O*NET sections essential_skills, knowledge, and abilities were empty for this occupation in the scraped notebook data. Requirements are curated from O*NET tasks, work styles, and management interest area."
+    },
+    "hard_skills": {
+      "project_planning": 85,
+      "stakeholder_communication": 80,
+      "risk_management": 75,
+      "budget_tracking": 70,
+      "team_coordination": 80,
+      "documentation": 75,
+      "project_tools": 65
+    },
+    "soft_skills": [
+      "leadership",
+      "dependability",
+      "attention_to_detail",
+      "cooperation",
+      "stress_tolerance"
+    ],
+    "interests": [
+      "management_administration",
+      "enterprising"
+    ],
+    "related_courses": [
+      "Manajemen Proyek",
+      "Komunikasi Bisnis",
+      "Manajemen Risiko",
+      "Sistem Informasi Manajemen"
+    ],
+    "portfolio": [
+      "Project plan with timeline, budget, risk register, and stakeholder map",
+      "Retrospective report from a team project or campus organization activity"
+    ],
+    "learning_path": [
+      "Project scope and objectives",
+      "Timeline and resource planning",
+      "Stakeholder communication",
+      "Risk and budget tracking",
+      "Project reporting"
+    ],
+    "resources": {
+      "free": [
+        "Atlassian Agile Coach",
+        "Google Project Management financial aid",
+        "Trello project management guides"
+      ],
+      "paid": [
+        "Google Project Management Certificate",
+        "PMI CAPM preparation course"
+      ]
+    },
+    "onet_evidence": {
+      "top_work_styles": [
+        "Dependability: 91",
+        "Leadership Orientation: 85",
+        "Attention to Detail: 84",
+        "Cooperation: 77"
+      ],
+      "top_interest_areas": [
+        "Management/Administration: 85"
+      ],
+      "representative_tasks": [
+        "Assign duties or responsibilities to project personnel.",
+        "Communicate with key stakeholders to determine project requirements and objectives.",
+        "Develop or update project plans including objectives, technologies, schedules, funding, and staffing.",
+        "Monitor costs incurred by project staff to identify budget issues."
+      ]
+    }
+  },
+  "Market Research Analyst": {
+    "source_basis": {
+      "primary_onet_occupation": "Market Research Analysts and Marketing Specialists",
+      "onet_code": "13-1161.00",
+      "source_url": "https://www.onetonline.org/link/summary/13-1161.00",
+      "notebook_data_note": "Strong O*NET basis for survey design, customer data analysis, marketing strategy evaluation, and graphical reporting."
+    },
+    "hard_skills": {
+      "statistics": 75,
+      "survey_design": 80,
+      "market_analysis": 80,
+      "data_analysis": 75,
+      "data_visualization": 70,
+      "report_writing": 75,
+      "marketing_understanding": 75
+    },
+    "soft_skills": [
+      "critical_thinking",
+      "curiosity",
+      "communication",
+      "attention_to_detail"
+    ],
+    "interests": [
+      "marketing_advertising",
+      "business_initiatives",
+      "investigative"
+    ],
+    "related_courses": [
+      "Riset Pemasaran",
+      "Statistika",
+      "Perilaku Konsumen",
+      "Komunikasi Pemasaran"
+    ],
+    "portfolio": [
+      "Survey-based market research report",
+      "Marketing campaign analysis with dashboard and recommendations"
+    ],
+    "learning_path": [
+      "Marketing fundamentals",
+      "Survey and research design",
+      "Statistics and data analysis",
+      "Visualization and reporting",
+      "Recommendation writing"
+    ],
+    "resources": {
+      "free": [
+        "Google Analytics Academy",
+        "HubSpot marketing resources",
+        "Kaggle Learn"
+      ],
+      "paid": [
+        "Coursera Market Research Specialization",
+        "Udemy Marketing Analytics course"
+      ]
+    },
+    "onet_evidence": {
+      "top_knowledge": [
+        "Sales and Marketing: 77",
+        "Mathematics: 76",
+        "Communications and Media: 63"
+      ],
+      "top_tasks": [
+        "Prepare reports of findings, illustrating data graphically: 90",
+        "Collect and analyze customer data: 84",
+        "Conduct research on consumer opinions and marketing strategies: 84",
+        "Devise and evaluate methods for collecting data: 82"
+      ],
+      "top_interest_areas": [
+        "Marketing/Advertising: 92",
+        "Business Initiatives: 68"
+      ]
+    }
+  },
+  "Financial Analyst": {
+    "source_basis": {
+      "primary_onet_occupation": "Financial Managers",
+      "onet_code": "11-3031.00",
+      "source_url": "https://www.onetonline.org/link/summary/11-3031.00",
+      "notebook_data_note": "The notebook contains Financial Managers rather than entry-level Financial Analysts. This MVP node adapts O*NET evidence on finance, accounting, budgeting, cash flow, and financial data for undergraduate career planning."
+    },
+    "hard_skills": {
+      "financial_analysis": 80,
+      "accounting": 75,
+      "spreadsheet": 80,
+      "budgeting": 75,
+      "risk_analysis": 65,
+      "business_understanding": 70,
+      "report_writing": 70
+    },
+    "soft_skills": [
+      "integrity",
+      "attention_to_detail",
+      "dependability",
+      "cautiousness"
+    ],
+    "interests": [
+      "finance",
+      "accounting",
+      "management_administration",
+      "business_initiatives"
+    ],
+    "related_courses": [
+      "Akuntansi",
+      "Manajemen Keuangan",
+      "Statistika Bisnis",
+      "Ekonomi",
+      "Analisis Laporan Keuangan"
+    ],
+    "portfolio": [
+      "Financial statement analysis report",
+      "Budgeting and cash flow model in spreadsheet"
+    ],
+    "learning_path": [
+      "Accounting fundamentals",
+      "Spreadsheet modeling",
+      "Financial statement analysis",
+      "Budgeting and risk basics",
+      "Financial recommendation report"
+    ],
+    "resources": {
+      "free": [
+        "Corporate Finance Institute free resources",
+        "Khan Academy Finance and Capital Markets",
+        "Excel for finance tutorials"
+      ],
+      "paid": [
+        "CFI Financial Modeling and Valuation Analyst",
+        "Udemy Financial Analysis course"
+      ]
+    },
+    "onet_evidence": {
+      "top_knowledge": [
+        "Economics and Accounting: 77",
+        "Administration and Management: 83",
+        "Mathematics: 68"
+      ],
+      "top_tasks": [
+        "Oversee the flow of cash or financial instruments: 80",
+        "Evaluate data pertaining to costs to plan budgets: 65",
+        "Establish procedures for custody or control of assets and records: 85",
+        "Communicate with stockholders or investors: 81"
+      ],
+      "top_interest_areas": [
+        "Finance: 98",
+        "Management/Administration: 93",
+        "Accounting: 69"
+      ]
+    }
+  },
+  "UI Designer": {
+    "source_basis": {
+      "primary_onet_occupation": "Graphic Designers",
+      "onet_code": "27-1024.00",
+      "source_url": "https://www.onetonline.org/link/summary/27-1024.00",
+      "notebook_data_note": "The notebook contains Graphic Designers. This MVP adapts it into UI Designer for a more relevant undergraduate digital-product career path while preserving O*NET evidence on design, computer tools, layout, media, and client communication."
+    },
+    "hard_skills": {
+      "visual_design": 85,
+      "layout_design": 80,
+      "figma": 75,
+      "ui_implementation_awareness": 60,
+      "design_systems": 70,
+      "user_empathy": 65,
+      "presentation": 65
+    },
+    "soft_skills": [
+      "innovation",
+      "attention_to_detail",
+      "communication",
+      "originality"
+    ],
+    "interests": [
+      "visual_arts",
+      "applied_arts_and_design",
+      "media",
+      "artistic"
+    ],
+    "related_courses": [
+      "Interaksi Manusia dan Komputer",
+      "Desain Antarmuka",
+      "Komunikasi Visual",
+      "Multimedia"
+    ],
+    "portfolio": [
+      "Mobile app UI redesign case study",
+      "Design system and clickable prototype in Figma"
+    ],
+    "learning_path": [
+      "Visual design fundamentals",
+      "Layout and typography",
+      "Figma prototyping",
+      "Design systems",
+      "Case study writing"
+    ],
+    "resources": {
+      "free": [
+        "Figma Learn",
+        "Google UX Design financial aid",
+        "Nielsen Norman Group articles"
+      ],
+      "paid": [
+        "Google UX Design Certificate",
+        "Interaction Design Foundation"
+      ]
+    },
+    "onet_evidence": {
+      "top_knowledge": [
+        "Design: 93",
+        "Computers and Electronics: 85",
+        "Fine Arts: 85",
+        "Communications and Media: 83"
+      ],
+      "top_tasks": [
+        "Determine size and arrangement of illustrative material and copy: 90",
+        "Develop graphics and layouts for product illustrations, company logos, and Web sites: 89",
+        "Create designs, concepts, and sample layouts: 88",
+        "Use computer software to generate new images: 87"
+      ],
+      "top_interest_areas": [
+        "Visual Arts: 95",
+        "Applied Arts and Design: 93",
+        "Media: 66"
+      ]
+    }
+  }
+}
