@@ -1,0 +1,891 @@
+{
+    "accounting": {
+        "aliases": [
+            "Accounting"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "achievement_orientation": {
+        "aliases": [
+            "Achievement Orientation"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "active_learning": {
+        "aliases": [
+            "Active Learning"
+        ],
+        "category": "cognitive_skill",
+        "requires": []
+    },
+    "active_listening": {
+        "aliases": [
+            "Active Listening"
+        ],
+        "category": "cognitive_skill",
+        "requires": []
+    },
+    "adaptability": {
+        "aliases": [
+            "Adaptability"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "administration_and_management": {
+        "aliases": [
+            "Administration and Management"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "administrative": {
+        "aliases": [
+            "Administrative"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "applied_arts_and_design": {
+        "aliases": [
+            "Applied Arts and Design"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "arm_hand_steadiness": {
+        "aliases": [
+            "Arm-Hand Steadiness"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "artistic": {
+        "aliases": [
+            "Artistic"
+        ],
+        "category": "interest_type",
+        "requires": []
+    },
+    "attention_to_detail": {
+        "aliases": [
+            "Attention to Detail"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "auditory_attention": {
+        "aliases": [
+            "Auditory Attention"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "biology": {
+        "aliases": [
+            "Biology"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "building_and_construction": {
+        "aliases": [
+            "Building and Construction"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "business_initiatives": {
+        "aliases": [
+            "Business Initiatives"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "category_flexibility": {
+        "aliases": [
+            "Category Flexibility"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "cautiousness": {
+        "aliases": [
+            "Cautiousness"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "chemistry": {
+        "aliases": [
+            "Chemistry"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "communications_and_media": {
+        "aliases": [
+            "Communications and Media"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "computers_and_electronics": {
+        "aliases": [
+            "Computers and Electronics"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "construction_woodwork": {
+        "aliases": [
+            "Construction/Woodwork"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "conventional": {
+        "aliases": [
+            "Conventional"
+        ],
+        "category": "interest_type",
+        "requires": []
+    },
+    "cooperation": {
+        "aliases": [
+            "Cooperation"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "creative_writing": {
+        "aliases": [
+            "Creative Writing"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "critical_thinking": {
+        "aliases": [
+            "Critical Thinking"
+        ],
+        "category": "cognitive_skill",
+        "requires": []
+    },
+    "customer_and_personal_service": {
+        "aliases": [
+            "Customer and Personal Service"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "deductive_reasoning": {
+        "aliases": [
+            "Deductive Reasoning"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "dependability": {
+        "aliases": [
+            "Dependability"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "design": {
+        "aliases": [
+            "Design"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "economics_and_accounting": {
+        "aliases": [
+            "Economics and Accounting"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "education_and_training": {
+        "aliases": [
+            "Education and Training"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "empathy": {
+        "aliases": [
+            "Empathy"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "engineering": {
+        "aliases": [
+            "Engineering"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "engineering_and_technology": {
+        "aliases": [
+            "Engineering and Technology"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "english_language": {
+        "aliases": [
+            "English Language"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "enterprising": {
+        "aliases": [
+            "Enterprising"
+        ],
+        "category": "interest_type",
+        "requires": []
+    },
+    "extent_flexibility": {
+        "aliases": [
+            "Extent Flexibility"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "far_vision": {
+        "aliases": [
+            "Far Vision"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "finance": {
+        "aliases": [
+            "Finance"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "fine_arts": {
+        "aliases": [
+            "Fine Arts"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "finger_dexterity": {
+        "aliases": [
+            "Finger Dexterity"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "flexibility_of_closure": {
+        "aliases": [
+            "Flexibility of Closure"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "fluency_of_ideas": {
+        "aliases": [
+            "Fluency of Ideas"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "geography": {
+        "aliases": [
+            "Geography"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "health_care_service": {
+        "aliases": [
+            "Health Care Service"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "humility": {
+        "aliases": [
+            "Humility"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "inductive_reasoning": {
+        "aliases": [
+            "Inductive Reasoning"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "information_ordering": {
+        "aliases": [
+            "Information Ordering"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "information_technology": {
+        "aliases": [
+            "Information Technology"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "initiative": {
+        "aliases": [
+            "Initiative"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "innovation": {
+        "aliases": [
+            "Innovation"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "integrity": {
+        "aliases": [
+            "Integrity"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "intellectual_curiosity": {
+        "aliases": [
+            "Intellectual Curiosity"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "investigative": {
+        "aliases": [
+            "Investigative"
+        ],
+        "category": "interest_type",
+        "requires": []
+    },
+    "law": {
+        "aliases": [
+            "Law"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "law_and_government": {
+        "aliases": [
+            "Law and Government"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "leadership_orientation": {
+        "aliases": [
+            "Leadership Orientation"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "learning_strategies": {
+        "aliases": [
+            "Learning Strategies"
+        ],
+        "category": "cognitive_skill",
+        "requires": []
+    },
+    "life_science": {
+        "aliases": [
+            "Life Science"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "management_administration": {
+        "aliases": [
+            "Management/Administration"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "manual_dexterity": {
+        "aliases": [
+            "Manual Dexterity"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "marketing_advertising": {
+        "aliases": [
+            "Marketing/Advertising"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "mathematical_reasoning": {
+        "aliases": [
+            "Mathematical Reasoning"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "mathematics": {
+        "aliases": [
+            "Mathematics"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "mathematics_statistics": {
+        "aliases": [
+            "Mathematics/Statistics"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "mechanical": {
+        "aliases": [
+            "Mechanical"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "mechanics_electronics": {
+        "aliases": [
+            "Mechanics/Electronics"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "media": {
+        "aliases": [
+            "Media"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "medical_science": {
+        "aliases": [
+            "Medical Science"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "medicine_and_dentistry": {
+        "aliases": [
+            "Medicine and Dentistry"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "memorization": {
+        "aliases": [
+            "Memorization"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "monitoring": {
+        "aliases": [
+            "Monitoring"
+        ],
+        "category": "cognitive_skill",
+        "requires": []
+    },
+    "multilimb_coordination": {
+        "aliases": [
+            "Multilimb Coordination"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "near_vision": {
+        "aliases": [
+            "Near Vision"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "number_facility": {
+        "aliases": [
+            "Number Facility"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "office_work": {
+        "aliases": [
+            "Office Work"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "optimism": {
+        "aliases": [
+            "Optimism"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "oral_comprehension": {
+        "aliases": [
+            "Oral Comprehension"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "oral_expression": {
+        "aliases": [
+            "Oral Expression"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "originality": {
+        "aliases": [
+            "Originality"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "perceptual_speed": {
+        "aliases": [
+            "Perceptual Speed"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "performing_arts": {
+        "aliases": [
+            "Performing Arts"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "perseverance": {
+        "aliases": [
+            "Perseverance"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "personnel_and_human_resources": {
+        "aliases": [
+            "Personnel and Human Resources"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "philosophy_and_theology": {
+        "aliases": [
+            "Philosophy and Theology"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "physics": {
+        "aliases": [
+            "Physics"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "politics": {
+        "aliases": [
+            "Politics"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "problem_sensitivity": {
+        "aliases": [
+            "Problem Sensitivity"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "production_and_processing": {
+        "aliases": [
+            "Production and Processing"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "professional_advising": {
+        "aliases": [
+            "Professional Advising"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "psychology": {
+        "aliases": [
+            "Psychology"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "public_safety_and_security": {
+        "aliases": [
+            "Public Safety and Security"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "public_speaking": {
+        "aliases": [
+            "Public Speaking"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "reading_comprehension": {
+        "aliases": [
+            "Reading Comprehension"
+        ],
+        "category": "cognitive_skill",
+        "requires": []
+    },
+    "realistic": {
+        "aliases": [
+            "Realistic"
+        ],
+        "category": "interest_type",
+        "requires": []
+    },
+    "sales": {
+        "aliases": [
+            "Sales"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "sales_and_marketing": {
+        "aliases": [
+            "Sales and Marketing"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "science": {
+        "aliases": [
+            "Science"
+        ],
+        "category": "cognitive_skill",
+        "requires": []
+    },
+    "selective_attention": {
+        "aliases": [
+            "Selective Attention"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "self_confidence": {
+        "aliases": [
+            "Self-Confidence"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "self_control": {
+        "aliases": [
+            "Self-Control"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "sincerity": {
+        "aliases": [
+            "Sincerity"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "social": {
+        "aliases": [
+            "Social"
+        ],
+        "category": "interest_type",
+        "requires": []
+    },
+    "social_orientation": {
+        "aliases": [
+            "Social Orientation"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "social_science": {
+        "aliases": [
+            "Social Science"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "social_service": {
+        "aliases": [
+            "Social Service"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "sociology_and_anthropology": {
+        "aliases": [
+            "Sociology and Anthropology"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "speaking": {
+        "aliases": [
+            "Speaking"
+        ],
+        "category": "cognitive_skill",
+        "requires": []
+    },
+    "speech_clarity": {
+        "aliases": [
+            "Speech Clarity"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "speech_recognition": {
+        "aliases": [
+            "Speech Recognition"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "speed_of_closure": {
+        "aliases": [
+            "Speed of Closure"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "stamina": {
+        "aliases": [
+            "Stamina"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "static_strength": {
+        "aliases": [
+            "Static Strength"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "stress_tolerance": {
+        "aliases": [
+            "Stress Tolerance"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "teaching_education": {
+        "aliases": [
+            "Teaching/Education"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "telecommunications": {
+        "aliases": [
+            "Telecommunications"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "therapy_and_counseling": {
+        "aliases": [
+            "Therapy and Counseling"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "time_sharing": {
+        "aliases": [
+            "Time Sharing"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "tolerance_for_ambiguity": {
+        "aliases": [
+            "Tolerance for Ambiguity"
+        ],
+        "category": "work_trait",
+        "requires": []
+    },
+    "transportation": {
+        "aliases": [
+            "Transportation"
+        ],
+        "category": "knowledge_domain",
+        "requires": []
+    },
+    "trunk_strength": {
+        "aliases": [
+            "Trunk Strength"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "visual_arts": {
+        "aliases": [
+            "Visual Arts"
+        ],
+        "category": "interest_area",
+        "requires": []
+    },
+    "visual_color_discrimination": {
+        "aliases": [
+            "Visual Color Discrimination"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "visualization": {
+        "aliases": [
+            "Visualization"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "writing": {
+        "aliases": [
+            "Writing"
+        ],
+        "category": "cognitive_skill",
+        "requires": []
+    },
+    "written_comprehension": {
+        "aliases": [
+            "Written Comprehension"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    },
+    "written_expression": {
+        "aliases": [
+            "Written Expression"
+        ],
+        "category": "cognitive_ability",
+        "requires": []
+    }
+}

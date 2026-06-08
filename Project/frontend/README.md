@@ -2,13 +2,17 @@
 
 Dokumen ini ditujukan untuk Frontend (FE) Developer untuk memahami konteks bisnis, arsitektur, daftar endpoint, skema data, serta panduan integrasi dengan Backend (BE) NalarPath AI yang sudah berjalan.
 
+> **Versi API saat ini: v0.3.0 (Hybrid Rule-Based + ML)**
+> Lihat [`API_CHANGELOG.md`](./API_CHANGELOG.md) untuk detail perubahan per versi.
+
 ---
 
 ## 1. Ikhtisar Proyek (Project Overview)
 **NalarPath AI** adalah aplikasi berbasis AI/Reasoning Engine yang membantu mahasiswa tingkat sarjana dalam merekomendasikan dan memvalidasi jalur karier mereka secara realistis dan beretika. Sistem ini mencocokkan profil pengguna (jurusan, semester, tingkat keahlian saat ini, pengalaman, dan preferensi) dengan data persyaratan karier terkurasi (berbasis data riil O*NET).
 
 ### Arsitektur Integrasi
-- **Backend Tech Stack**: FastAPI (Python), Uvicorn, Pydantic.
+- **Backend Tech Stack**: FastAPI (Python), Uvicorn, Pydantic, scikit-learn, SHAP.
+- **Engine**: Hybrid Rule-Based + ML — menggabungkan rule-based scoring dengan Random Forest/Gradient Boosting classifier.
 - **Backend Server URL**: `http://127.0.0.1:8000` (atau port lokal lain jika disesuaikan).
 - **CORS**: Sudah diaktifkan untuk semua origin (`allow_origins=["*"]`), metode, dan header. Frontend dapat langsung memanggil API tanpa hambatan CORS di lokal.
 - **Data Store**: Menggunakan basis data pengetahuan karier lokal (`career_requirements_mvp.json`).
@@ -422,6 +426,8 @@ export interface UserProfile {
   major: string | null;
   semester: number | null;
   skills: Record<string, number>;
+  soft_skills: string[];              // v0.2.0+ — opsional, kirim [] jika tidak ada
+  interests: string[];                // v0.2.0+ — opsional, kirim [] jika tidak ada
   experiences: string[];
   preferences: Record<string, any>;
 }
@@ -429,7 +435,7 @@ export interface UserProfile {
 // 1. Cek kesehatan server
 export const checkApiHealth = async () => {
   const response = await API.get('/api/health');
-  return response.data; // { status: "ok", career_count: number }
+  return response.data; // { status: "ok", career_count: number, ml_available: boolean }
 };
 
 // 2. Ambil katalog karier
@@ -444,13 +450,13 @@ export const getCareerDetail = async (careerName: string) => {
   return response.data;
 };
 
-// 4. Kirim analisis Discovery Mode
+// 4. Kirim analisis Discovery Mode (hybrid scoring)
 export const analyzeCareer = async (profile: UserProfile, topN: number = 3) => {
   const response = await API.post('/api/analyze', { profile, top_n: topN });
   return response.data;
 };
 
-// 5. Kirim analisis Validation Mode
+// 5. Kirim analisis Validation Mode (hybrid scoring)
 export const validateTargetCareer = async (targetCareer: string, profile: UserProfile) => {
   const response = await API.post('/api/validate', {
     target_career: targetCareer,
@@ -458,7 +464,26 @@ export const validateTargetCareer = async (targetCareer: string, profile: UserPr
   });
   return response.data;
 };
+
+// 6. [v0.3.0] Ambil info model ML yang aktif
+export const getModelInfo = async () => {
+  const response = await API.get('/api/model/info');
+  return response.data;
+};
+
+// 7. [v0.3.0] Trigger training ulang (untuk demo)
+export const triggerTraining = async () => {
+  const response = await API.post('/api/train');
+  return response.data; // { job_id, status: "started" }
+};
+
+// 8. [v0.3.0] Cek status training
+export const getTrainingStatus = async () => {
+  const response = await API.get('/api/train/status');
+  return response.data;
+};
 ```
+
 
 ---
 

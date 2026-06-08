@@ -15,12 +15,27 @@
       "data_visualization": 75,
       "research_methodology": 70
     },
+    "skill_weights": {
+      "statistics": 2.5,
+      "python": 2.5,
+      "machine_learning": 2.0,
+      "data_cleaning": 1.5,
+      "model_evaluation": 1.5,
+      "data_visualization": 1.0,
+      "research_methodology": 1.0
+    },
     "soft_skills": [
       "attention_to_detail",
       "intellectual_curiosity",
       "innovation",
       "tolerance_for_ambiguity"
     ],
+    "soft_skill_weights": {
+      "attention_to_detail": 2.0,
+      "intellectual_curiosity": 2.0,
+      "innovation": 1.5,
+      "tolerance_for_ambiguity": 1.5
+    },
     "interests": [
       "mathematics_statistics",
       "information_technology",
@@ -90,12 +105,27 @@
       "reporting": 75,
       "python": 65
     },
+    "skill_weights": {
+      "sql": 2.5,
+      "data_visualization": 2.5,
+      "statistics": 2.0,
+      "reporting": 1.5,
+      "spreadsheet": 1.5,
+      "business_understanding": 1.0,
+      "python": 1.0
+    },
     "soft_skills": [
       "attention_to_detail",
       "critical_thinking",
       "communication",
       "integrity"
     ],
+    "soft_skill_weights": {
+      "attention_to_detail": 2.0,
+      "critical_thinking": 2.0,
+      "communication": 1.5,
+      "integrity": 1.5
+    },
     "interests": [
       "information_technology",
       "mathematics_statistics",
@@ -166,12 +196,27 @@
       "git": 65,
       "requirements_analysis": 65
     },
+    "skill_weights": {
+      "programming": 3.0,
+      "data_structures": 2.5,
+      "software_design": 2.0,
+      "software_testing": 1.5,
+      "database": 1.0,
+      "git": 1.0,
+      "requirements_analysis": 1.0
+    },
     "soft_skills": [
       "critical_thinking",
       "attention_to_detail",
       "innovation",
       "dependability"
     ],
+    "soft_skill_weights": {
+      "critical_thinking": 2.0,
+      "attention_to_detail": 2.0,
+      "innovation": 1.5,
+      "dependability": 1.5
+    },
     "interests": [
       "information_technology",
       "mathematics_statistics",
@@ -242,12 +287,27 @@
       "log_analysis": 70,
       "security_documentation": 65
     },
+    "skill_weights": {
+      "security_fundamentals": 3.0,
+      "networking": 2.5,
+      "risk_analysis": 2.0,
+      "log_analysis": 1.5,
+      "operating_systems": 1.5,
+      "linux": 1.0,
+      "security_documentation": 1.0
+    },
     "soft_skills": [
       "attention_to_detail",
       "integrity",
       "cautiousness",
       "perseverance"
     ],
+    "soft_skill_weights": {
+      "attention_to_detail": 2.5,
+      "integrity": 2.5,
+      "cautiousness": 2.0,
+      "perseverance": 1.5
+    },
     "interests": [
       "information_technology",
       "conventional",
@@ -317,12 +377,27 @@
       "troubleshooting": 80,
       "business_understanding": 70
     },
+    "skill_weights": {
+      "systems_analysis": 2.5,
+      "troubleshooting": 2.5,
+      "requirements_analysis": 2.0,
+      "software_testing": 1.5,
+      "business_understanding": 1.5,
+      "database": 1.0,
+      "programming": 1.0
+    },
     "soft_skills": [
       "communication",
       "critical_thinking",
       "attention_to_detail",
       "adaptability"
     ],
+    "soft_skill_weights": {
+      "communication": 2.0,
+      "critical_thinking": 2.0,
+      "attention_to_detail": 1.5,
+      "adaptability": 1.5
+    },
     "interests": [
       "information_technology",
       "investigative",
@@ -390,12 +465,27 @@
       "report_writing": 75,
       "stakeholder_analysis": 75
     },
+    "skill_weights": {
+      "business_understanding": 2.5,
+      "requirements_analysis": 2.5,
+      "stakeholder_analysis": 2.0,
+      "process_modeling": 2.0,
+      "report_writing": 1.5,
+      "data_analysis": 1.0,
+      "spreadsheet": 1.0
+    },
     "soft_skills": [
       "communication",
       "critical_thinking",
       "attention_to_detail",
       "adaptability"
     ],
+    "soft_skill_weights": {
+      "communication": 2.5,
+      "critical_thinking": 2.0,
+      "attention_to_detail": 1.5,
+      "adaptability": 1.5
+    },
     "interests": [
       "management_administration",
       "business_initiatives",
@@ -466,6 +556,15 @@
       "documentation": 75,
       "project_tools": 65
     },
+    "skill_weights": {
+      "project_planning": 3.0,
+      "team_coordination": 2.5,
+      "stakeholder_communication": 2.5,
+      "risk_management": 2.0,
+      "documentation": 1.5,
+      "budget_tracking": 1.0,
+      "project_tools": 1.0
+    },
     "soft_skills": [
       "leadership",
       "dependability",
@@ -473,6 +572,13 @@
       "cooperation",
       "stress_tolerance"
     ],
+    "soft_skill_weights": {
+      "leadership": 3.0,
+      "dependability": 2.0,
+      "cooperation": 2.0,
+      "stress_tolerance": 1.5,
+      "attention_to_detail": 1.5
+    },
     "interests": [
       "management_administration",
       "enterprising"
@@ -539,12 +645,27 @@
       "report_writing": 75,
       "marketing_understanding": 75
     },
+    "skill_weights": {
+      "market_analysis": 2.5,
+      "survey_design": 2.5,
+      "statistics": 2.0,
+      "report_writing": 2.0,
+      "data_analysis": 1.5,
+      "marketing_understanding": 1.5,
+      "data_visualization": 1.0
+    },
     "soft_skills": [
       "critical_thinking",
       "curiosity",
       "communication",
       "attention_to_detail"
     ],
+    "soft_skill_weights": {
+      "critical_thinking": 2.0,
+      "curiosity": 2.0,
+      "communication": 2.0,
+      "attention_to_detail": 1.5
+    },
     "interests": [
       "marketing_advertising",
       "business_initiatives",
@@ -612,12 +733,27 @@
       "business_understanding": 70,
       "report_writing": 70
     },
+    "skill_weights": {
+      "financial_analysis": 3.0,
+      "accounting": 2.5,
+      "spreadsheet": 2.0,
+      "budgeting": 2.0,
+      "risk_analysis": 1.5,
+      "report_writing": 1.0,
+      "business_understanding": 1.0
+    },
     "soft_skills": [
       "integrity",
       "attention_to_detail",
       "dependability",
       "cautiousness"
     ],
+    "soft_skill_weights": {
+      "integrity": 3.0,
+      "attention_to_detail": 2.5,
+      "dependability": 2.0,
+      "cautiousness": 2.0
+    },
     "interests": [
       "finance",
       "accounting",
@@ -688,12 +824,27 @@
       "user_empathy": 65,
       "presentation": 65
     },
+    "skill_weights": {
+      "visual_design": 3.0,
+      "figma": 2.5,
+      "layout_design": 2.5,
+      "design_systems": 2.0,
+      "user_empathy": 1.5,
+      "ui_implementation_awareness": 1.0,
+      "presentation": 1.0
+    },
     "soft_skills": [
       "innovation",
       "attention_to_detail",
       "communication",
       "originality"
     ],
+    "soft_skill_weights": {
+      "innovation": 2.5,
+      "originality": 2.5,
+      "attention_to_detail": 2.0,
+      "communication": 1.5
+    },
     "interests": [
       "visual_arts",
       "applied_arts_and_design",
