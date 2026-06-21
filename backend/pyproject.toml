@@ -1,0 +1,8 @@
+[project]
+name = "nalarpath-ai-backend"
+version = "0.3.0"
+requires-python = ">=3.12"
+
+# Dependencies are declared in requirements.txt.
+# This file exists to pin the Python version for Vercel deployment.
+# Vercel supports: 3.12 (default), 3.13, 3.14. Python 3.11 is not available.
