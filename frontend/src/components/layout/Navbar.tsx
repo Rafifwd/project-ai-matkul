@@ -34,8 +34,8 @@ export default function Navbar() {
   }, [])
 
   return (
-    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-6xl bg-white/70 backdrop-blur-xl border border-white/60 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all">
+      <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <NavLink to="/" className="flex items-center gap-2.5 flex-shrink-0">
             <img src="/logo.png" alt="NalarPath Logo" className="w-10 h-10 object-contain scale-125 drop-shadow-sm" />
@@ -108,7 +108,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-slate-200 bg-white animate-fade-in">
+        <div className="md:hidden absolute top-[calc(100%+0.5rem)] left-0 w-full bg-white/90 backdrop-blur-xl border border-white/60 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] animate-fade-in overflow-hidden">
           <nav className="px-4 py-3 flex flex-col gap-1">
             {NAV_ITEMS.map(item => (
               <NavLink

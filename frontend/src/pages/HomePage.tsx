@@ -56,23 +56,23 @@ export default function HomePage() {
   return (
     <div className="animate-fade-in">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-white via-indigo-50 to-violet-100">
+      <section className="relative overflow-hidden bg-slate-50">
         {/* Background decoration */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-24 left-1/4 w-[500px] h-[500px] bg-indigo-300/40 rounded-full blur-3xl" />
-          <div className="absolute top-16 right-1/4 w-80 h-80 bg-violet-300/35 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-48 bg-indigo-200/30 rounded-full blur-3xl" />
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] bg-indigo-400/20 rounded-full blur-[120px] mix-blend-multiply animate-pulse-slow" />
+          <div className="absolute top-[10%] -right-[10%] w-[60%] h-[60%] bg-violet-400/20 rounded-full blur-[120px] mix-blend-multiply animate-pulse-slow" style={{ animationDelay: '1s' }} />
+          <div className="absolute -bottom-[20%] left-[20%] w-[60%] h-[60%] bg-purple-400/20 rounded-full blur-[120px] mix-blend-multiply animate-pulse-slow" style={{ animationDelay: '2s' }} />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 text-center">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 pb-24 text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-sm border border-indigo-200 text-indigo-700 text-xs font-semibold mb-8 shadow-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/60 backdrop-blur-md border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-indigo-700 text-xs font-semibold mb-8">
             <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
             {t('badge')}
           </div>
 
           {/* Headline */}
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-slate-900 leading-tight mb-6">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-slate-900 leading-[1.1] mb-6 tracking-tight">
             {t('title_part1')}
             <br />
             <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 bg-clip-text text-transparent">{t('title_part2')}</span>
@@ -84,11 +84,11 @@ export default function HomePage() {
 
           {/* CTA Buttons */}
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link to="/discover" className="btn-primary text-base px-7 py-3 shadow-lg shadow-indigo-300/40">
+            <Link to="/discover" className="btn-primary text-base px-8 py-3.5">
               <IconCompass size={18} />
               {t('explore_btn')}
             </Link>
-            <Link to="/validate" className="btn-outline text-base px-7 py-3">
+            <Link to="/validate" className="btn-secondary text-base px-8 py-3.5">
               <IconCheckCircle size={18} />
               {t('validate_btn')}
             </Link>

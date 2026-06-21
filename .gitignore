@@ -36,3 +36,9 @@ dist-ssr/
 # OS files
 .DS_Store
 Thumbs.db
+
+# AI Agent / Coding Assistant
+.agents/
+
+# Generated files
+frontend/skills-lock.json
