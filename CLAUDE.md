@@ -15,10 +15,10 @@ This is an **academic project** (Universitas Padjadjaran, Informatika). Treat it
 | Layer | Technology |
 |---|---|
 | Frontend | React 18.3, Vite 5, TypeScript 5.2, Tailwind CSS 3.4, React Router 6, Recharts 2, i18next 26 |
-| Backend | Python 3.11+, FastAPI 0.110+, Uvicorn, Pydantic v1/v2 |
+| Backend | Python 3.12 (Vercel minimum), FastAPI 0.110+, Uvicorn, Pydantic v1/v2 |
 | ML | Scikit-Learn 1.4, SHAP 0.45, Pandas 2.1, NumPy 1.26, Joblib 1.3 |
-| Deployment | Vercel (frontend: Vite, backend: Python serverless) |
-| API Client | Axios 1.7 (30 s timeout, `baseURL: http://127.0.0.1:8000`) |
+| Deployment | Vercel — 100% Vercel (frontend: Vite service, backend: Python serverless service) |
+| API Client | Axios 1.7 (30 s timeout, `baseURL: VITE_API_URL \|\| ''`) |
 
 ---
 
@@ -45,9 +45,10 @@ project-ai-matkul/
 │   ├── ml_trainer.py       # Model training, evaluation, artifact saving
 │   ├── feature_engineering.py  # Feature extraction from UserProfile
 │   ├── xai_explainer.py    # SHAP-based narrative generation
-│   ├── data/               # Synthetic data generator (O*NET-informed)
-│   ├── models/             # Persisted .pkl model files (gitignored)
+│   ├── data/               # Synthetic data generator (O*NET-informed); training_data.csv gitignored
+│   ├── models/             # Trained .pkl artifacts — COMMITTED to Git (deployed as static files)
 │   ├── requirements.txt
+│   ├── pyproject.toml      # Python version pin for Vercel (>=3.12)
 │   └── run_backend.ps1     # Windows PowerShell runner
 ├── vercel.json             # Vercel monorepo config
 └── README.md
@@ -84,14 +85,26 @@ npm run build      # tsc && vite build (production bundle)
 npm run preview    # Preview production build
 ```
 
-### First-time ML Setup
+### ML Model — Local Training Workflow
 
-After starting the backend, trigger model training via:
+Model artifacts (`backend/models/*.pkl`) are **committed to Git** and deployed as static files.
+Training is a **manual, local-only** process — it does NOT happen on Vercel.
+
+```powershell
+# From backend/ with venv active:
+python ml_trainer.py                   # Retrain and save artifacts to backend/models/
+# Then commit and push:
+git add backend/models/
+git commit -m "chore: retrain ML model"
+git push
 ```
-POST http://127.0.0.1:8000/api/train
-GET  http://127.0.0.1:8000/api/train/status
-```
-The backend runs rule-only mode until a model is trained.
+
+The `POST /api/train` endpoint remains in the codebase for local use but returns HTTP 403 in
+production (Vercel sets `VERCEL`/`VERCEL_ENV` env vars which trigger the guard).
+
+**Why this approach:** retraining is infrequent (knowledge base rarely changes), Vercel's
+60-second function timeout makes on-demand training impossible, and committing artifacts keeps
+deployment simple and free.
 
 ---
 
@@ -126,7 +139,7 @@ The backend runs rule-only mode until a model is trained.
 - **Training runs in a background `threading.Thread`** — never block the event loop. State is tracked in `_training_state` dict guarded by `_training_lock`.
 - **Module-level imports for ML are deferred** inside `_run_training_job` to avoid circular import issues.
 - **All endpoints return plain dicts** — FastAPI serialises them. Do not use `JSONResponse` unless needed.
-- **CORS is wide open** (`allow_origins=["*"]`) — this is intentional for local dev. Do not restrict it.
+- **CORS reads `ALLOWED_ORIGINS` env var** (comma-separated). Defaults to `http://localhost:5173` for local dev. In production the frontend and backend share the same Vercel origin, so CORS is irrelevant.
 - **Error handling**: raise `HTTPException` for 4xx errors. Let unhandled exceptions propagate as 500s (FastAPI default).
 
 ---
@@ -142,9 +155,47 @@ The backend runs rule-only mode until a model is trained.
 **NEVER:**
 - Add new Python packages without updating `backend/requirements.txt`.
 - Add new npm packages without a clear reason (existing stack covers most needs).
-- Hardcode `http://127.0.0.1:8000` outside of `src/api/client.ts`.
-- Commit trained model `.pkl` files — they are gitignored and regenerated via `/api/train`.
+- Hardcode `http://127.0.0.1:8000` anywhere — use `VITE_API_URL` env var via `client.ts`.
+- Delete or untrack the committed model artifacts in `backend/models/` — they are intentionally versioned.
 - Manually edit generated or synthetic data files in `backend/data/`.
+- Run `POST /api/train` in production — it is blocked by design (HTTP 403 on Vercel).
+
+---
+
+## Deployment Architecture
+
+### Platform: 100% Vercel (decided — not to be revisited unless training frequency changes)
+
+Both frontend and backend deploy to a **single Vercel project** using the `experimentalServices`
+monorepo configuration in `vercel.json`.
+
+| Service | Config | Routing |
+|---|---|---|
+| Frontend (Vite) | `entrypoint: frontend`, `routePrefix: /` | Catch-all for all non-API paths |
+| Backend (FastAPI) | `entrypoint: backend/main.py`, `routePrefix: /api` | All `/api/*` requests |
+
+**Routing behaviour**: Vercel routes `/api/*` to FastAPI before the frontend catch-all. FastAPI
+receives the **full path** (e.g., `/api/health`), which matches routes defined as
+`@app.get("/api/health")`. No path rewriting needed.
+
+**Same-origin in production**: Frontend and backend share the same Vercel domain. `client.ts`
+uses `baseURL: ''` so all Axios calls resolve relative to the page origin. CORS is only needed
+for local dev (different ports).
+
+### Vercel Dashboard Setup (one-time, manual)
+1. Set **Framework Preset** to **Services**.
+2. Set **Root Directory** to the repo root.
+3. No env vars need to be set manually — `VERCEL`/`VERCEL_ENV` are injected automatically.
+   Optional: set `HYBRID_ALPHA` to override the rule/ML weight ratio (default: 0.5).
+
+### Python Version
+Vercel supports Python **3.12** (default), 3.13, 3.14. Python 3.11 is not available on Vercel.
+`backend/pyproject.toml` pins `requires-python = ">=3.12"`.
+
+### If training frequency increases in the future
+The current model commit workflow breaks down if the knowledge base changes frequently.
+In that case, consider migrating the backend to Railway or Render (persistent process, no
+timeout limit). The application code requires zero changes — only the deploy target changes.
 
 ---
 
