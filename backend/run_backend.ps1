@@ -1,6 +1,6 @@
 # NalarPath AI — Backend Runner Script
 # Jalankan file ini dari PowerShell:
-#   cd "c:\SMT4\AI\project-ai-matkul\Project\backend"
+#   cd "c:\SMT4\AI\project-ai-matkul\backend"
 #   .\run_backend.ps1
 
 $PythonExe = "C:\Users\HP\AppData\Local\Python\bin\python3.exe"
