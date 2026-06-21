@@ -1,4 +1,5 @@
 import axios from 'axios'
+import i18n from '../i18n'
 import type {
   UserProfile,
   AnalyzeResponse,
@@ -37,7 +38,7 @@ export const analyzeCareer = async (
   profile: UserProfile,
   topN: number = 3,
 ): Promise<AnalyzeResponse> => {
-  const response = await API.post('/api/analyze', { profile, top_n: topN })
+  const response = await API.post('/api/analyze', { profile, top_n: topN, lang: i18n.language })
   return response.data
 }
 
@@ -48,6 +49,7 @@ export const validateTargetCareer = async (
   const response = await API.post('/api/validate', {
     target_career: targetCareer,
     profile,
+    lang: i18n.language,
   })
   return response.data
 }
@@ -62,7 +64,7 @@ export const triggerTraining = async (): Promise<{
   job_id: string
   message: string
 }> => {
-  const response = await API.post('/api/train')
+  const response = await API.post('/api/train', null, { params: { lang: i18n.language } })
   return response.data
 }
 

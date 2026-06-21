@@ -41,12 +41,16 @@ export interface CareerDetail {
   interests: string[];
   related_courses: string[];
   portfolio?: string[];
-  learning_path?: Array<{ skill: string; reason?: string }>;
+  learning_path?: Array<{ skill: string; reason?: string } | string>;
   resources?: {
     free?: Resource[];
     paid?: Resource[];
   };
-  onet_evidence?: string;
+  onet_evidence?: {
+    top_work_styles?: string[];
+    top_interest_areas?: string[];
+    representative_tasks?: string[];
+  } | string;
 }
 
 // ─── Analysis Results ─────────────────────────────────────────────────────────

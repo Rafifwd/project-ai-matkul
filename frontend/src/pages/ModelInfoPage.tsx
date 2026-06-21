@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { getModelInfo, triggerTraining, getTrainingStatus } from '../api/client'
 import type { ModelInfo, TrainingStatus } from '../types/api'
 import {
@@ -43,6 +44,7 @@ const STATUS_PROGRESS: Record<TrainingStatus['status'], number> = {
 }
 
 export default function ModelInfoPage() {
+  const { t } = useTranslation(['model', 'common'])
   const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null)
   const [trainingStatus, setTrainingStatus] = useState<TrainingStatus | null>(null)
   const [loadingInfo, setLoadingInfo] = useState(true)
@@ -115,7 +117,7 @@ export default function ModelInfoPage() {
       const status = await getTrainingStatus()
       setTrainingStatus(status)
     } catch {
-      setTriggerMsg('Gagal memulai training. Pastikan backend berjalan.')
+      setTriggerMsg(t('model:training_failed_msg'))
     } finally {
       setTriggering(false)
     }
@@ -130,7 +132,7 @@ export default function ModelInfoPage() {
 
   const MODEL_STATS = [
     {
-      label: 'Akurasi CV',
+      label: t('model:accuracy', 'Akurasi CV'),
       value: modelInfo?.cv_accuracy != null
         ? `${(modelInfo.cv_accuracy * 100).toFixed(1)}%`
         : '—',
@@ -139,7 +141,7 @@ export default function ModelInfoPage() {
       Icon: IconTarget,
     },
     {
-      label: 'F1-Score',
+      label: t('model:f1_score', 'F1-Score'),
       value: modelInfo?.cv_f1_macro != null
         ? `${(modelInfo.cv_f1_macro * 100).toFixed(1)}%`
         : '—',
@@ -148,14 +150,14 @@ export default function ModelInfoPage() {
       Icon: IconBarChart,
     },
     {
-      label: 'Data Training',
+      label: t('model:trained_samples', 'Data Training'),
       value: modelInfo?.sample_count?.toLocaleString() ?? '—',
       color: 'text-violet-600',
       bg: 'bg-violet-50 border-violet-100',
       Icon: IconDatabase,
     },
     {
-      label: 'Kelas Karier',
+      label: t('model:supported_classes', 'Kelas Karier'),
       value: modelInfo?.class_count?.toString() ?? '—',
       color: 'text-amber-600',
       bg: 'bg-amber-50 border-amber-100',
@@ -170,21 +172,21 @@ export default function ModelInfoPage() {
           <div className="w-9 h-9 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
             <IconZap size={20} />
           </div>
-          <h1 className="text-3xl font-bold text-slate-900">Model AI</h1>
+          <h1 className="text-3xl font-bold text-slate-900">{t('model:title')}</h1>
         </div>
         <p className="text-slate-500">
-          Informasi model Machine Learning yang aktif dan fitur live retraining untuk demo.
+          {t('model:subtitle')}
         </p>
       </div>
 
       {/* Model Info Card */}
       <div className="glass-card p-6">
-        <h2 className="section-title">Status Model ML</h2>
+        <h2 className="section-title">{t('model:model_details')}</h2>
 
         {loadingInfo ? (
           <div className="flex items-center gap-3">
             <div className="w-5 h-5 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
-            <span className="text-slate-500 text-sm">Memuat info model…</span>
+            <span className="text-slate-500 text-sm">{t('model:loading')}</span>
           </div>
         ) : modelInfo ? (
           <div className="space-y-4">
@@ -202,7 +204,7 @@ export default function ModelInfoPage() {
                     modelInfo.available ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'
                   }`}
                 />
-                {modelInfo.available ? 'Model Aktif' : 'Model Belum Tersedia'}
+                {modelInfo.available ? t('model:model_active') : t('model:model_not_ready')}
               </div>
               {modelInfo.model_type && (
                 <span className="badge badge-info font-mono">{modelInfo.model_type}</span>
@@ -223,21 +225,21 @@ export default function ModelInfoPage() {
               </div>
             ) : (
               <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-600">
-                Model belum dilatih. Klik <strong className="text-indigo-600">Retrain Model</strong> di bawah untuk memulai proses training pertama kali.
+                {t('model:unavailable')}
               </div>
             )}
 
             {/* Training date */}
             {modelInfo.training_date && (
               <p className="text-xs text-slate-400 font-mono">
-                Terakhir dilatih: {new Date(modelInfo.training_date).toLocaleString('id-ID')}
+                {t('model:last_updated')}: {new Date(modelInfo.training_date).toLocaleString('id-ID')}
               </p>
             )}
 
             {/* Class names */}
             {modelInfo.class_names && modelInfo.class_names.length > 0 && (
               <div>
-                <p className="text-xs font-semibold text-slate-500 mb-2">Karier yang dikenali model:</p>
+                <p className="text-xs font-semibold text-slate-500 mb-2">{t('model:recognized_careers')}</p>
                 <div className="flex flex-wrap gap-1.5">
                   {modelInfo.class_names.map(cn => (
                     <span key={cn} className="badge-standard text-xs">{cn}</span>
@@ -247,7 +249,7 @@ export default function ModelInfoPage() {
             )}
           </div>
         ) : (
-          <p className="text-slate-400 text-sm">Gagal memuat info model. Pastikan backend berjalan.</p>
+          <p className="text-slate-400 text-sm">{t('model:error')}</p>
         )}
       </div>
 
@@ -255,11 +257,10 @@ export default function ModelInfoPage() {
       <div className="glass-card p-6 bg-gradient-to-br from-indigo-50 to-violet-50 border-indigo-100">
         <h2 className="section-title flex items-center gap-2">
           <IconRefresh size={16} className="text-indigo-500" />
-          Live Retraining Demo
+          {t('model:training_control')}
         </h2>
         <p className="text-sm text-slate-600 mb-6">
-          Trigger proses training ulang model ML secara live. Data sintetis baru akan digenerate
-          dan model Random Forest / Gradient Boosting akan dilatih ulang.
+          {t('model:training_control_desc')}
         </p>
 
         {/* Progress bar */}
@@ -267,7 +268,7 @@ export default function ModelInfoPage() {
           <div className="mb-6 space-y-3">
             <div className="flex items-center justify-between">
               <span className={`text-sm font-medium ${STATUS_COLORS[trainingStatus.status]}`}>
-                {STATUS_LABELS[trainingStatus.status]}
+                {trainingStatus.status === 'idle' ? t('model:status_idle') : trainingStatus.status === 'started' ? t('model:status_gen') : trainingStatus.status === 'generating_data' ? t('model:status_gen') : trainingStatus.status === 'training' ? t('model:status_train') : trainingStatus.status === 'completed' ? t('model:status_done') : t('model:status_fail')}
               </span>
               {trainingStatus.job_id && (
                 <span className="text-xs font-mono text-slate-400">
@@ -291,10 +292,10 @@ export default function ModelInfoPage() {
 
             {/* Step labels */}
             <div className="flex justify-between text-xs text-slate-400">
-              <span>Mulai</span>
-              <span>Generate Data</span>
-              <span>Training</span>
-              <span>Selesai</span>
+              <span>{t('model:step_start')}</span>
+              <span>{t('model:step_gen_data')}</span>
+              <span>{t('model:step_training')}</span>
+              <span>{t('model:step_done')}</span>
             </div>
 
             {/* Timestamps */}
@@ -312,7 +313,7 @@ export default function ModelInfoPage() {
               <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
                 <p className="text-xs font-semibold text-emerald-700 mb-2 flex items-center gap-1.5">
                   <IconCheckCircle size={12} />
-                  Hasil Training:
+                  {t('model:training_result')}
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
                   <div>
@@ -320,19 +321,19 @@ export default function ModelInfoPage() {
                     <p className="text-slate-800">{trainingStatus.result.model_type}</p>
                   </div>
                   <div>
-                    <span className="text-slate-500">Akurasi</span>
+                    <span className="text-slate-500">{t('model:acc')}</span>
                     <p className="text-emerald-700">
                       {(trainingStatus.result.cv_accuracy * 100).toFixed(1)}%
                     </p>
                   </div>
                   <div>
-                    <span className="text-slate-500">F1 Score</span>
+                    <span className="text-slate-500">{t('model:f1')}</span>
                     <p className="text-sky-700">
                       {(trainingStatus.result.cv_f1_macro * 100).toFixed(1)}%
                     </p>
                   </div>
                   <div>
-                    <span className="text-slate-500">Samples</span>
+                    <span className="text-slate-500">{t('model:samples')}</span>
                     <p className="text-violet-700">
                       {trainingStatus.result.sample_count.toLocaleString()}
                     </p>
@@ -367,18 +368,18 @@ export default function ModelInfoPage() {
           {triggering || isTraining ? (
             <>
               <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-              Training berjalan…
+              {t('model:btn_training')}
             </>
           ) : (
             <>
               <IconRocket size={16} />
-              Retrain Model Sekarang
+              {t('model:btn_train')}
             </>
           )}
         </button>
 
         <p className="text-xs text-slate-400 mt-3">
-          Proses ini berjalan di background. Halaman akan otomatis memperbarui status setiap 2 detik.
+          {t('model:bg_process_notice')}
         </p>
       </div>
 
@@ -386,25 +387,25 @@ export default function ModelInfoPage() {
       <div className="glass-card p-6">
         <h2 className="section-title flex items-center gap-2">
           <IconLayers size={16} className="text-indigo-500" />
-          Arsitektur Engine
+          {t('model:engine_status')}
         </h2>
         <div className="grid sm:grid-cols-3 gap-4 text-sm">
           {[
             {
-              title: 'Rule-Based Engine',
-              desc: 'Mencocokkan skill dengan persyaratan minimum karier berbasis bobot per skill (1.0×–3.0×)',
+              title: t('model:engine_rule'),
+              desc: t('model:engine_rule_desc'),
               color: 'border-l-indigo-500',
               bg: 'bg-indigo-50',
             },
             {
-              title: 'ML Engine',
-              desc: 'RandomForest + GradientBoosting menganalisis 82 fitur (hard/soft skills + interests) untuk prediksi probabilitas',
+              title: t('model:engine_ml'),
+              desc: t('model:engine_ml_desc'),
               color: 'border-l-violet-500',
               bg: 'bg-violet-50',
             },
             {
               title: 'SHAP Explainer',
-              desc: 'SHAP values menjelaskan kontribusi tiap fitur terhadap prediksi agar AI dapat dipertanggungjawabkan',
+              desc: t('model:engine_shap_desc'),
               color: 'border-l-emerald-500',
               bg: 'bg-emerald-50',
             },

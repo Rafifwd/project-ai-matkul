@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { validateTargetCareer, getCareers } from "../api/client";
 import type { UserProfile, ValidateResponse } from "../types/api";
 import {
@@ -7,7 +8,6 @@ import {
   SOFT_SKILLS,
   INTERESTS,
   MAJORS,
-  getSkillLabel,
   getScoreGradient,
 } from "../constants/skills";
 import HybridScoreBadge from "../components/ui/HybridScoreBadge";
@@ -48,10 +48,17 @@ function buildEmptyProfile(): UserProfile {
   };
 }
 
-const STEPS = ["Pilih Karier", "Hard Skills", "Soft Skills & Minat", "Review"];
+// STEPS dynamically generated inside component
 const CATEGORY_ICONS = [IconBrain, IconCode, IconShield, IconPieChart, IconPalette];
 
 export default function ValidatePage() {
+  const { t } = useTranslation(['validate', 'discover', 'skills', 'soft_skills', 'interests', 'majors', 'common']);
+  const STEPS = [
+    t('validate:step_career', 'Pilih Karier'),
+    t('discover:step_hardskills'),
+    t('discover:step_softskills'),
+    t('validate:step_review', 'Review'),
+  ];
   const [searchParams] = useSearchParams();
   const [step, setStep] = useState(0);
   const [targetCareer, setTargetCareer] = useState(
@@ -116,7 +123,7 @@ export default function ValidatePage() {
         message?: string;
       };
       setError(
-        err.response?.data?.detail ?? err.message ?? "Terjadi kesalahan",
+        err.response?.data?.detail ?? err.message ?? t('discover:error_default'),
       );
     } finally {
       setLoading(false);
@@ -139,12 +146,11 @@ export default function ValidatePage() {
             <IconCheckCircle size={20} />
           </div>
           <h1 className="text-3xl font-bold text-slate-900">
-            Validasi Karier
+            {t('validate:title')}
           </h1>
         </div>
         <p className="text-slate-500">
-          Punya target karier? Ukur kesiapanmu dan dapatkan roadmap belajar yang
-          dipersonalisasi.
+          {t('validate:subtitle')}
         </p>
       </div>
 
@@ -190,21 +196,21 @@ export default function ValidatePage() {
       {step === 0 && (
         <div className="glass-card p-6 space-y-6 animate-slide-up">
           <h2 className="text-lg font-semibold text-slate-900">
-            Pilih Target Karier
+            {t('validate:target_label')}
           </h2>
           <p className="text-sm text-slate-500">
-            Karier mana yang ingin kamu validasi kesiapannya?
+            {t('validate:subtitle')}
           </p>
 
           <div>
-            <label className="label">Target Karier</label>
+            <label className="label">{t('validate:target_label')}</label>
             <div className="relative">
               <select
                 className="select-field"
                 value={targetCareer}
                 onChange={(e) => setTargetCareer(e.target.value)}
               >
-                <option value="">Pilih karier target…</option>
+                <option value="">{t('validate:target_placeholder')}</option>
                 {careerOptions.map((c) => (
                   <option key={c} value={c}>
                     {c}
@@ -225,7 +231,7 @@ export default function ValidatePage() {
           )}
 
           <div>
-            <label className="label">Jurusan (opsional)</label>
+            <label className="label">{t('discover:major_label')}</label>
             <div className="relative">
               <select
                 className="select-field"
@@ -234,10 +240,10 @@ export default function ValidatePage() {
                   setProfile((p) => ({ ...p, major: e.target.value || null }))
                 }
               >
-                <option value="">Pilih jurusan…</option>
+                <option value="">{t('discover:major_placeholder')}</option>
                 {MAJORS.map((m) => (
                   <option key={m} value={m}>
-                    {m}
+                    {t(`majors:${m.toLowerCase().replace(/ /g, '_')}`)}
                   </option>
                 ))}
               </select>
@@ -249,13 +255,13 @@ export default function ValidatePage() {
 
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="label">Semester</label>
+              <label className="label">{t('discover:semester_label')}</label>
               <input
                 type="number"
                 min={1}
                 max={14}
                 className="input-field"
-                placeholder="Contoh: 6"
+                placeholder={t('discover:semester_placeholder')}
                 value={profile.semester ?? ""}
                 onChange={(e) =>
                   setProfile((p) => ({
@@ -273,7 +279,7 @@ export default function ValidatePage() {
               onClick={() => setStep(1)}
               disabled={!targetCareer}
             >
-              Lanjut →
+              {t('discover:btn_next')}
             </button>
           </div>
         </div>
@@ -284,13 +290,12 @@ export default function ValidatePage() {
         <div className="glass-card p-6 space-y-6 animate-slide-up">
           <div className="flex items-center gap-3">
             <h2 className="text-lg font-semibold text-slate-900">
-              Level Hard Skills
+              {t('discover:level_hardskills_title')}
             </h2>
             <span className="badge-info">{targetCareer}</span>
           </div>
           <p className="text-sm text-slate-500">
-            Isi sesuai kemampuan sekarang. Sistem akan mengidentifikasi gap yang
-            perlu ditutup.
+            {t('discover:level_hardskills_desc')}
           </p>
 
           {/* Category tabs */}
@@ -320,7 +325,7 @@ export default function ValidatePage() {
               return (
                 <div key={sk.key} className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-700">{sk.label}</span>
+                    <span className="text-sm text-slate-700">{t(`skills:${sk.key}`)}</span>
                     <span className="text-sm font-mono font-semibold text-indigo-600 w-8 text-right">
                       {val}
                     </span>
@@ -335,8 +340,8 @@ export default function ValidatePage() {
                     className="w-full"
                   />
                   <div className="flex justify-between text-xs text-slate-400">
-                    <span>Tidak bisa</span>
-                    <span>Ahli</span>
+                    <span>{t('discover:skill_none')}</span>
+                    <span>{t('discover:skill_expert')}</span>
                   </div>
                 </div>
               );
@@ -345,10 +350,10 @@ export default function ValidatePage() {
 
           <div className="flex justify-between">
             <button className="btn-secondary" onClick={() => setStep(0)}>
-              ← Kembali
+              {t('discover:btn_prev')}
             </button>
             <button className="btn-primary" onClick={() => setStep(2)}>
-              Lanjut →
+              {t('discover:btn_next')}
             </button>
           </div>
         </div>
@@ -358,12 +363,12 @@ export default function ValidatePage() {
       {step === 2 && (
         <div className="glass-card p-6 space-y-8 animate-slide-up">
           <h2 className="text-lg font-semibold text-slate-900">
-            Soft Skills & Minat
+            {t('discover:softskills_title')}
           </h2>
 
           <div>
             <h3 className="text-sm font-semibold text-slate-700 mb-3">
-              Soft Skills ({profile.soft_skills.length} dipilih)
+              {t('discover:softskills_label', { count: profile.soft_skills.length })}
             </h3>
             <div className="flex flex-wrap gap-2">
               {SOFT_SKILLS.map((sk) => {
@@ -378,7 +383,7 @@ export default function ValidatePage() {
                         : "bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:text-slate-800"
                     }`}
                   >
-                    {sk.label}
+                    {t(`soft_skills:${sk.key}`)}
                   </button>
                 );
               })}
@@ -387,7 +392,7 @@ export default function ValidatePage() {
 
           <div>
             <h3 className="text-sm font-semibold text-slate-700 mb-3">
-              Minat ({profile.interests.length} dipilih)
+              {t('discover:interests_label', { count: profile.interests.length })}
             </h3>
             <div className="flex flex-wrap gap-2">
               {INTERESTS.map((int) => {
@@ -402,7 +407,7 @@ export default function ValidatePage() {
                         : "bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:text-slate-800"
                     }`}
                   >
-                    {int.label}
+                    {t(`interests:${int.key}`)}
                   </button>
                 );
               })}
@@ -411,10 +416,10 @@ export default function ValidatePage() {
 
           <div className="flex justify-between">
             <button className="btn-secondary" onClick={() => setStep(1)}>
-              ← Kembali
+              {t('discover:btn_prev')}
             </button>
             <button className="btn-primary" onClick={() => setStep(3)}>
-              Lanjut →
+              {t('discover:btn_next')}
             </button>
           </div>
         </div>
@@ -423,34 +428,33 @@ export default function ValidatePage() {
       {/* ── STEP 3: Review ── */}
       {step === 3 && (
         <div className="glass-card p-6 space-y-6 animate-slide-up">
-          <h2 className="text-lg font-semibold text-slate-900">Siap Divalidasi</h2>
+          <h2 className="text-lg font-semibold text-slate-900">{t('discover:summary_title')}</h2>
 
           <div className="flex items-center gap-2 p-4 bg-indigo-50 border border-indigo-200 rounded-xl">
             <IconTarget size={16} className="text-indigo-500 flex-shrink-0" />
             <p className="text-sm text-indigo-800">
-              Target Karier:{" "}
+              {t('validate:target_label')}:{" "}
               <strong className="text-indigo-900">{targetCareer}</strong>
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-slate-400">Hard Skills Terisi</span>
+              <span className="text-slate-400">{t('discover:summary_hardskills')}</span>
               <p className="text-slate-800 font-medium">
-                {Object.values(profile.skills).filter((v) => v > 0).length}{" "}
-                skill
+                {t('discover:summary_hardskills_val', { count: Object.values(profile.skills).filter((v) => v > 0).length })}
               </p>
             </div>
             <div>
-              <span className="text-slate-400">Soft Skills</span>
+              <span className="text-slate-400">{t('discover:summary_softskills')}</span>
               <p className="text-slate-800 font-medium">
-                {profile.soft_skills.length} dipilih
+                {t('discover:summary_softskills_val', { count: profile.soft_skills.length })}
               </p>
             </div>
             <div>
-              <span className="text-slate-400">Minat</span>
+              <span className="text-slate-400">{t('discover:summary_interests')}</span>
               <p className="text-slate-800 font-medium">
-                {profile.interests.length} dipilih
+                {t('discover:summary_interests_val', { count: profile.interests.length })}
               </p>
             </div>
           </div>
@@ -464,7 +468,7 @@ export default function ValidatePage() {
 
           <div className="flex justify-between">
             <button className="btn-secondary" onClick={() => setStep(2)}>
-              ← Kembali
+              {t('discover:btn_prev')}
             </button>
             <button
               className="btn-primary"
@@ -474,12 +478,12 @@ export default function ValidatePage() {
               {loading ? (
                 <>
                   <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                  Memvalidasi…
+                  {t('validate:btn_validating')}
                 </>
               ) : (
                 <>
                   <IconSearch size={16} />
-                  Validasi Sekarang
+                  {t('validate:btn_validate')}
                 </>
               )}
             </button>
@@ -493,6 +497,7 @@ export default function ValidatePage() {
           result={result}
           onReset={reset}
           userSkills={profile.skills}
+          t={t}
         />
       )}
     </div>
@@ -503,10 +508,12 @@ function ValidationResult({
   result,
   onReset,
   userSkills,
+  t,
 }: {
   result: ValidateResponse;
   onReset: () => void;
   userSkills: Record<string, number>;
+  t: any;
 }) {
   const r = result.result;
   const grad = getScoreGradient(r.hybrid_score);
@@ -517,7 +524,7 @@ function ValidationResult({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-bold text-slate-900">
-            Hasil Validasi: {r.target_career}
+            {t('validate:result_title', { career: r.target_career })}
           </h2>
           <p className="text-sm text-slate-500 mt-0.5">
             {r.confidence_message}
@@ -525,7 +532,7 @@ function ValidationResult({
         </div>
         <button className="btn-secondary" onClick={onReset}>
           <IconRefresh size={14} />
-          Validasi Ulang
+          {t('common:validate_again')}
         </button>
       </div>
 
@@ -565,24 +572,24 @@ function ValidationResult({
         <div className="glass-card p-6">
           <h3 className="section-title flex items-center gap-2">
             <IconBarChart size={16} className="text-indigo-500" />
-            Rincian Skor
+            {t('discover:score_breakdown')}
           </h3>
           <div className="grid grid-cols-3 gap-3">
             {[
               {
-                label: "Hard Skills",
+                label: t('discover:sb_hard'),
                 value: r.score_breakdown.hard_skill_score,
                 color: "text-indigo-600",
                 bg: "bg-indigo-50 border-indigo-100",
               },
               {
-                label: "Soft Skills",
+                label: t('discover:sb_soft'),
                 value: r.score_breakdown.soft_skill_score,
                 color: "text-violet-600",
                 bg: "bg-violet-50 border-violet-100",
               },
               {
-                label: "Minat",
+                label: t('discover:sb_interest'),
                 value: r.score_breakdown.interest_score,
                 color: "text-emerald-600",
                 bg: "bg-emerald-50 border-emerald-100",
@@ -623,13 +630,13 @@ function ValidationResult({
           <div className="glass-card p-6">
             <h3 className="section-title flex items-center gap-2">
               <IconCheckCircle size={16} className="text-emerald-500" />
-              Kekuatan yang Terpenuhi
+              {t('discover:why_match')}
             </h3>
             <div className="space-y-3">
               {r.fulfilled_strengths.map((item) => (
                 <SkillBar
                   key={item.skill}
-                  label={getSkillLabel(item.skill)}
+                  label={t(`skills:${item.skill}`)}
                   current={userSkills[item.skill] ?? item.current}
                   required={item.required}
                   weight={item.weight}
@@ -644,13 +651,13 @@ function ValidationResult({
           <div className="glass-card p-6">
             <h3 className="section-title flex items-center gap-2">
               <IconAlertTriangle size={16} className="text-red-500" />
-              Kesenjangan Kritis
+              {t('discover:gaps')}
             </h3>
             <div className="space-y-3">
               {r.critical_gaps.map((item) => (
                 <SkillBar
                   key={item.skill}
-                  label={getSkillLabel(item.skill)}
+                  label={t(`skills:${item.skill}`)}
                   current={userSkills[item.skill] ?? item.current}
                   required={item.required}
                   weight={item.weight}
@@ -667,7 +674,7 @@ function ValidationResult({
         <div className="glass-card p-6">
           <h3 className="section-title flex items-center gap-2">
             <IconMap size={16} className="text-indigo-500" />
-            Roadmap Belajar yang Disarankan
+            {t('validate:learning_roadmap')}
           </h3>
           <div className="relative">
             {/* Timeline line */}
@@ -688,7 +695,7 @@ function ValidationResult({
                   {/* Content */}
                   <div className="flex-1 pb-2">
                     <p className="font-semibold text-slate-800 text-sm">
-                      {getSkillLabel(step.skill)}
+                      {t(`skills:${step.skill}`)}
                     </p>
                     <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
                       {step.reason}
@@ -706,7 +713,7 @@ function ValidationResult({
         <div className="glass-card p-6">
           <h3 className="section-title flex items-center gap-2">
             <IconBriefcase size={16} className="text-indigo-500" />
-            Saran Portofolio
+            {t('validate:portfolio')}
           </h3>
           <ul className="space-y-2">
             {r.portfolio.map((item, i) => (
@@ -740,7 +747,7 @@ function ValidationResult({
             <div className="glass-card p-6">
               <h3 className="section-title flex items-center gap-2">
                 <IconBookOpen size={16} className="text-indigo-500" />
-                Sumber Belajar Gratis
+                {t('discover:free_resources')}
               </h3>
               <ul className="space-y-2">
                 {r.free_resources.map((res, i) => (
@@ -758,7 +765,7 @@ function ValidationResult({
             <div className="glass-card p-6">
               <h3 className="section-title flex items-center gap-2">
                 <IconCreditCard size={16} className="text-amber-500" />
-                Kursus Berbayar
+                {t('discover:paid_resources')}
               </h3>
               <ul className="space-y-2">
                 {r.paid_resources.map((res, i) => (

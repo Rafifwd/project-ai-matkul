@@ -123,6 +123,7 @@ def _compute_shap_explanation(
     user_profile: Dict[str, Any],
     career_name: str,
     career_idx: int,
+    lang: str = "id",
 ) -> Optional[Dict[str, Any]]:
     """Compute SHAP explanation for a specific career prediction."""
     if not is_explainer_loaded():
@@ -130,7 +131,7 @@ def _compute_shap_explanation(
 
     try:
         features = extract_profile_features(user_profile)
-        return explain_prediction(features, career_name, career_idx, _scaler)
+        return explain_prediction(features, career_name, career_idx, _scaler, lang=lang)
     except Exception as e:
         logger.warning("SHAP explanation failed for %s: %s", career_name, e)
         return None
@@ -141,6 +142,7 @@ def hybrid_analyze_career(
     career_data: Dict[str, Any],
     user_profile: Dict[str, Any],
     ml_probs: Optional[Dict[str, float]] = None,
+    lang: str = "id",
 ) -> Dict[str, Any]:
     """
     Run hybrid analysis for a single career:
@@ -150,7 +152,7 @@ def hybrid_analyze_career(
     4. Hybrid score computation
     """
     # Step 1: Rule-Based analysis
-    rule_result = analyze_career_full(career_name, career_data, user_profile)
+    rule_result = analyze_career_full(career_name, career_data, user_profile, lang=lang)
     rule_score = rule_result["score"]
 
     # If ML not available, return rule-only result
@@ -170,7 +172,7 @@ def hybrid_analyze_career(
     # Step 3: SHAP explanation
     class_names = list(_encoder.classes_)
     career_idx = class_names.index(career_name) if career_name in class_names else 0
-    shap_result = _compute_shap_explanation(user_profile, career_name, career_idx)
+    shap_result = _compute_shap_explanation(user_profile, career_name, career_idx, lang=lang)
 
     # Step 4: Hybrid score
     hybrid_score = round(
@@ -192,6 +194,7 @@ def hybrid_discovery_mode(
     user_profile: Dict[str, Any],
     kb: Dict[str, Any],
     top_n: int = 3,
+    lang: str = "id",
 ) -> List[Dict[str, Any]]:
     """
     Discovery mode using hybrid scoring.
@@ -204,7 +207,7 @@ def hybrid_discovery_mode(
     results = []
     for career_name, career_data in kb.items():
         analysis = hybrid_analyze_career(
-            career_name, career_data, user_profile, ml_probs,
+            career_name, career_data, user_profile, ml_probs, lang=lang,
         )
 
         results.append({
@@ -233,6 +236,7 @@ def hybrid_validation_mode(
     target_career: str,
     user_profile: Dict[str, Any],
     kb: Dict[str, Any],
+    lang: str = "id",
 ) -> Dict[str, Any]:
     """
     Validation mode using hybrid scoring for a specific target career.
@@ -245,7 +249,7 @@ def hybrid_validation_mode(
 
     career_data = kb[target_career]
     analysis = hybrid_analyze_career(
-        target_career, career_data, user_profile, ml_probs,
+        target_career, career_data, user_profile, ml_probs, lang=lang,
     )
 
     learning_order = [
@@ -277,7 +281,8 @@ def hybrid_validation_mode(
         "free_resources":             career_data.get("resources", {}).get("free", []),
         "paid_resources":             career_data.get("resources", {}).get("paid", []),
         "ethical_notice": (
-            "Rekomendasi ini tidak membatasi peluang berdasarkan jurusan. "
-            "Jurusan hanya digunakan sebagai konteks awal roadmap."
+            "Rekomendasi ini tidak membatasi peluang berdasarkan jurusan. Jurusan hanya digunakan sebagai konteks awal roadmap." 
+            if lang == "id" else 
+            "This recommendation does not limit opportunities based on major. The major is only used as initial roadmap context."
         ),
     }

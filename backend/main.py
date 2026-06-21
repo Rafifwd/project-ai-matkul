@@ -20,7 +20,7 @@ import logging
 import threading
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Literal
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -173,11 +173,13 @@ class UserProfile(BaseModel):
 class AnalyzeRequest(BaseModel):
     profile: UserProfile
     top_n: int = Field(default=3, ge=1, le=10)
+    lang: Literal["id", "en"] = "id"
 
 
 class ValidateRequest(BaseModel):
     target_career: str
     profile: UserProfile
+    lang: Literal["id", "en"] = "id"
 
 
 # ─────────────────────────────────────────────
@@ -258,7 +260,7 @@ def get_career_detail(career_name: str):
 @app.post("/api/analyze")
 def analyze_career(request: AnalyzeRequest):
     profile_dict = to_dict(request.profile)
-    results = hybrid_discovery_mode(profile_dict, kb, top_n=request.top_n)
+    results = hybrid_discovery_mode(profile_dict, kb, top_n=request.top_n, lang=request.lang)
 
     model_info = get_model_info()
 
@@ -275,6 +277,9 @@ def analyze_career(request: AnalyzeRequest):
         "ethical_notice": (
             "Rekomendasi ini tidak membatasi peluang berdasarkan jurusan. "
             "Jurusan hanya digunakan sebagai konteks awal roadmap."
+            if request.lang == "id" else
+            "This recommendation does not limit opportunities based on major. "
+            "The major is only used as initial roadmap context."
         ),
     }
 
@@ -283,7 +288,7 @@ def analyze_career(request: AnalyzeRequest):
 def validate_target_career(request: ValidateRequest):
     profile_dict = to_dict(request.profile)
     try:
-        result = hybrid_validation_mode(request.target_career, profile_dict, kb)
+        result = hybrid_validation_mode(request.target_career, profile_dict, kb, lang=request.lang)
     except ValueError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
@@ -313,7 +318,7 @@ def model_info():
 
 
 @app.post("/api/train")
-def trigger_training():
+def trigger_training(lang: Literal["id", "en"] = "id"):
     """
     Trigger model retraining (async background job).
     Returns immediately with job ID and status.
@@ -325,7 +330,11 @@ def trigger_training():
             return {
                 "status": "already_running",
                 "job_id": _training_state["job_id"],
-                "message": "Training sudah berjalan. Cek /api/train/status.",
+                "message": (
+                    "Training sudah berjalan. Cek /api/train/status."
+                    if lang == "id" else
+                    "Training is already running. Check /api/train/status."
+                ),
             }
 
         job_id = str(uuid.uuid4())[:8]
@@ -349,7 +358,11 @@ def trigger_training():
     return {
         "status": "started",
         "job_id": job_id,
-        "message": "Training dimulai. Gunakan GET /api/train/status untuk memantau.",
+        "message": (
+            "Training dimulai. Gunakan GET /api/train/status untuk memantau."
+            if lang == "id" else
+            "Training started. Use GET /api/train/status to monitor."
+        ),
     }
 
 

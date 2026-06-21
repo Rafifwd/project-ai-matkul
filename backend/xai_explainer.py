@@ -17,6 +17,28 @@ from feature_engineering import FEATURE_LABELS, FEATURE_NAMES
 _explainer = None
 _expected_value = None
 
+NARRATIVES = {
+    "id": {
+        "shap_unloaded": "Model SHAP belum di-load. Jalankan training terlebih dahulu.",
+        "shap_pos_contrib": "{label} ({feat_val:.1f}) berkontribusi +{shap_val:.1f}",
+        "shap_pos_summary": "ML model menaikkan prediksi untuk {career_name} karena: {parts}.",
+        "shap_neg_contrib": "{label} ({feat_val:.1f}) menurunkan {shap_val:.1f}",
+        "shap_neg_summary": "Namun, model menurunkan skor karena: {parts}.",
+        "shap_neutral": "Model ML memberikan prediksi netral untuk {career_name}."
+    },
+    "en": {
+        "shap_unloaded": "SHAP model is not loaded. Please run training first.",
+        "shap_pos_contrib": "{label} ({feat_val:.1f}) contributes +{shap_val:.1f}",
+        "shap_pos_summary": "ML model increased prediction for {career_name} because: {parts}.",
+        "shap_neg_contrib": "{label} ({feat_val:.1f}) decreases {shap_val:.1f}",
+        "shap_neg_summary": "However, the model decreased the score because: {parts}.",
+        "shap_neutral": "ML model gave a neutral prediction for {career_name}."
+    }
+}
+
+def get_text(lang: str, key: str) -> str:
+    return NARRATIVES.get(lang, {}).get(key) or NARRATIVES["id"][key]
+
 
 def load_explainer(model: Any, X_train: np.ndarray) -> None:
     """
@@ -43,6 +65,7 @@ def explain_prediction(
     career_name: str,
     career_idx: int,
     scaler: Any,
+    lang: str = "id",
 ) -> Dict[str, Any]:
     """
     Generate SHAP explanation for a single prediction.
@@ -70,7 +93,7 @@ def explain_prediction(
         return {
             "top_positive_features": [],
             "top_negative_features": [],
-            "shap_narrative": "Model SHAP belum di-load. Jalankan training terlebih dahulu.",
+            "shap_narrative": get_text(lang, "shap_unloaded"),
             "raw_shap_values": {},
         }
 
@@ -153,7 +176,7 @@ def explain_prediction(
 
     # Generate narrative
     narrative = format_shap_narrative(
-        top_pos, top_neg, feature_vector, career_name,
+        top_pos, top_neg, feature_vector, career_name, lang=lang
     )
 
     return {
@@ -169,6 +192,7 @@ def format_shap_narrative(
     top_negative: List[Dict],
     feature_vector: List[float],
     career_name: str,
+    lang: str = "id",
 ) -> str:
     """
     Generate an Indonesian-language SHAP narrative explaining why the
@@ -183,11 +207,10 @@ def format_shap_narrative(
             shap_val = feat["shap_value"]
             feat_val = feat["feature_value"]
             pos_parts.append(
-                f"{label} ({feat_val:.1f}) berkontribusi +{shap_val:.1f}"
+                get_text(lang, "shap_pos_contrib").format(label=label, feat_val=feat_val, shap_val=shap_val)
             )
         parts.append(
-            f"ML model menaikkan prediksi untuk {career_name} karena: "
-            + "; ".join(pos_parts) + "."
+            get_text(lang, "shap_pos_summary").format(career_name=career_name, parts="; ".join(pos_parts))
         )
 
     if top_negative:
@@ -197,16 +220,15 @@ def format_shap_narrative(
             shap_val = feat["shap_value"]
             feat_val = feat["feature_value"]
             neg_parts.append(
-                f"{label} ({feat_val:.1f}) menurunkan {shap_val:.1f}"
+                get_text(lang, "shap_neg_contrib").format(label=label, feat_val=feat_val, shap_val=shap_val)
             )
         parts.append(
-            "Namun, model menurunkan skor karena: "
-            + "; ".join(neg_parts) + "."
+            get_text(lang, "shap_neg_summary").format(parts="; ".join(neg_parts))
         )
 
     if not parts:
         parts.append(
-            f"Model ML memberikan prediksi netral untuk {career_name}."
+            get_text(lang, "shap_neutral").format(career_name=career_name)
         )
 
     return " ".join(parts)

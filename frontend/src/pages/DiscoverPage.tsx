@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { analyzeCareer } from "../api/client";
 import type {
   UserProfile,
@@ -10,7 +11,6 @@ import {
   SOFT_SKILLS,
   INTERESTS,
   MAJORS,
-  getSkillLabel,
   getScoreGradient,
 } from "../constants/skills";
 import HybridScoreBadge from "../components/ui/HybridScoreBadge";
@@ -36,13 +36,7 @@ import {
   IconPalette,
 } from "../components/ui/Icons";
 
-const STEPS = [
-  "Info Akademik",
-  "Hard Skills",
-  "Soft Skills & Minat",
-  "Preferensi",
-];
-
+// STEPS are now dynamically translated inside the component
 const CATEGORY_ICONS = [IconBrain, IconCode, IconShield, IconPieChart, IconPalette];
 
 function buildEmptyProfile(): UserProfile {
@@ -58,6 +52,13 @@ function buildEmptyProfile(): UserProfile {
 }
 
 export default function DiscoverPage() {
+  const { t } = useTranslation(['discover', 'skills', 'soft_skills', 'interests', 'majors', 'common']);
+  const STEPS = [
+    t('discover:step_academic'),
+    t('discover:step_hardskills'),
+    t('discover:step_softskills'),
+    t('discover:step_pref'),
+  ];
   const [step, setStep] = useState(0);
   const [profile, setProfile] = useState<UserProfile>(buildEmptyProfile());
   const [topN, setTopN] = useState(3);
@@ -97,7 +98,7 @@ export default function DiscoverPage() {
       setResult(res);
       setStep(4);
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Terjadi kesalahan";
+      const msg = e instanceof Error ? e.message : t('discover:error_default');
       setError(msg);
     } finally {
       setLoading(false);
@@ -120,12 +121,11 @@ export default function DiscoverPage() {
             <IconCompass size={20} />
           </div>
           <h1 className="text-3xl font-bold text-slate-900">
-            Temukan Karier
+            {t('discover:title')}
           </h1>
         </div>
         <p className="text-slate-500">
-          Isi profil skill-mu dan AI hybrid kami akan merekomendasikan karier
-          terbaik.
+          {t('discover:subtitle')}
         </p>
       </div>
 
@@ -170,11 +170,11 @@ export default function DiscoverPage() {
       {/* ── STEP 0: Info Akademik ── */}
       {step === 0 && (
         <div className="glass-card p-6 space-y-6 animate-slide-up">
-          <h2 className="text-lg font-semibold text-slate-900">Info Akademik</h2>
+          <h2 className="text-lg font-semibold text-slate-900">{t('discover:step_academic')}</h2>
 
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="label">Jurusan</label>
+              <label className="label">{t('discover:major_label')}</label>
               <div className="relative">
                 <select
                   className="select-field"
@@ -183,10 +183,10 @@ export default function DiscoverPage() {
                     setProfile((p) => ({ ...p, major: e.target.value || null }))
                   }
                 >
-                  <option value="">Pilih jurusan…</option>
+                  <option value="">{t('discover:major_placeholder')}</option>
                   {MAJORS.map((m) => (
                     <option key={m} value={m}>
-                      {m}
+                      {t(`majors:${m.toLowerCase().replace(/ /g, '_')}`)}
                     </option>
                   ))}
                 </select>
@@ -197,13 +197,13 @@ export default function DiscoverPage() {
             </div>
 
             <div>
-              <label className="label">Semester (1–14)</label>
+              <label className="label">{t('discover:semester_label')}</label>
               <input
                 type="number"
                 min={1}
                 max={14}
                 className="input-field"
-                placeholder="Contoh: 6"
+                placeholder={t('discover:semester_placeholder')}
                 value={profile.semester ?? ""}
                 onChange={(e) =>
                   setProfile((p) => ({
@@ -216,10 +216,10 @@ export default function DiscoverPage() {
           </div>
 
           <div>
-            <label className="label">Pengalaman (opsional)</label>
+            <label className="label">{t('discover:exp_label')}</label>
             <textarea
               className="input-field min-h-[80px] resize-none"
-              placeholder="Contoh: Magang di perusahaan IT, Organisasi BEM, Proyek freelance… (satu per baris)"
+              placeholder={t('discover:exp_placeholder')}
               value={profile.experiences.join("\n")}
               onChange={(e) =>
                 setProfile((p) => ({
@@ -231,7 +231,7 @@ export default function DiscoverPage() {
           </div>
 
           <div>
-            <label className="label">Top N Rekomendasi</label>
+            <label className="label">{t('discover:topn_label')}</label>
             <div className="flex items-center gap-3">
               {[1, 2, 3, 5].map((n) => (
                 <button
@@ -251,7 +251,7 @@ export default function DiscoverPage() {
 
           <div className="flex justify-end">
             <button className="btn-primary" onClick={() => setStep(1)}>
-              Lanjut →
+              {t('discover:btn_next')}
             </button>
           </div>
         </div>
@@ -261,11 +261,10 @@ export default function DiscoverPage() {
       {step === 1 && (
         <div className="glass-card p-6 space-y-6 animate-slide-up">
           <h2 className="text-lg font-semibold text-slate-900">
-            Level Hard Skills
+            {t('discover:level_hardskills_title')}
           </h2>
           <p className="text-sm text-slate-500">
-            Geser slider untuk mengisi level keahlianmu (0 = tidak bisa, 100 =
-            ahli). Lewati skill yang belum dikuasai.
+            {t('discover:level_hardskills_desc')}
           </p>
 
           {/* Category tabs */}
@@ -296,7 +295,7 @@ export default function DiscoverPage() {
               return (
                 <div key={sk.key} className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-700">{sk.label}</span>
+                    <span className="text-sm text-slate-700">{t(`skills:${sk.key}`)}</span>
                     <span className="text-sm font-mono font-semibold text-indigo-600 w-8 text-right">
                       {val}
                     </span>
@@ -311,8 +310,8 @@ export default function DiscoverPage() {
                     className="w-full"
                   />
                   <div className="flex justify-between text-xs text-slate-400">
-                    <span>Tidak bisa</span>
-                    <span>Ahli</span>
+                    <span>{t('discover:skill_none')}</span>
+                    <span>{t('discover:skill_expert')}</span>
                   </div>
                 </div>
               );
@@ -321,16 +320,15 @@ export default function DiscoverPage() {
 
           {/* Skill count summary */}
           <p className="text-xs text-slate-400">
-            {Object.values(profile.skills).filter((v) => v > 0).length} skill
-            telah diisi
+            {t('discover:skill_filled', { count: Object.values(profile.skills).filter((v) => v > 0).length })}
           </p>
 
           <div className="flex justify-between">
             <button className="btn-secondary" onClick={() => setStep(0)}>
-              ← Kembali
+              {t('discover:btn_prev')}
             </button>
             <button className="btn-primary" onClick={() => setStep(2)}>
-              Lanjut →
+              {t('discover:btn_next')}
             </button>
           </div>
         </div>
@@ -340,17 +338,16 @@ export default function DiscoverPage() {
       {step === 2 && (
         <div className="glass-card p-6 space-y-8 animate-slide-up">
           <h2 className="text-lg font-semibold text-slate-900">
-            Soft Skills & Minat
+            {t('discover:softskills_title')}
           </h2>
           <p className="text-sm text-slate-500">
-            Pilih yang menggambarkan dirimu. Semua opsional — jika dilewati,
-            skor netral (50) akan digunakan.
+            {t('discover:softskills_desc')}
           </p>
 
           {/* Soft Skills */}
           <div>
             <h3 className="text-sm font-semibold text-slate-700 mb-3">
-              Soft Skills ({profile.soft_skills.length} dipilih)
+              {t('discover:softskills_label', { count: profile.soft_skills.length })}
             </h3>
             <div className="flex flex-wrap gap-2">
               {SOFT_SKILLS.map((sk) => {
@@ -365,7 +362,7 @@ export default function DiscoverPage() {
                         : "bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:text-slate-800"
                     }`}
                   >
-                    {sk.label}
+                    {t(`soft_skills:${sk.key}`)}
                   </button>
                 );
               })}
@@ -375,7 +372,7 @@ export default function DiscoverPage() {
           {/* Interests */}
           <div>
             <h3 className="text-sm font-semibold text-slate-700 mb-3">
-              Minat / Bidang ({profile.interests.length} dipilih)
+              {t('discover:interests_label', { count: profile.interests.length })}
             </h3>
             <div className="flex flex-wrap gap-2">
               {INTERESTS.map((int) => {
@@ -390,7 +387,7 @@ export default function DiscoverPage() {
                         : "bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:text-slate-800"
                     }`}
                   >
-                    {int.label}
+                    {t(`interests:${int.key}`)}
                   </button>
                 );
               })}
@@ -399,10 +396,10 @@ export default function DiscoverPage() {
 
           <div className="flex justify-between">
             <button className="btn-secondary" onClick={() => setStep(1)}>
-              ← Kembali
+              {t('discover:btn_prev')}
             </button>
             <button className="btn-primary" onClick={() => setStep(3)}>
-              Lanjut →
+              {t('discover:btn_next')}
             </button>
           </div>
         </div>
@@ -411,39 +408,38 @@ export default function DiscoverPage() {
       {/* ── STEP 3: Review & Submit ── */}
       {step === 3 && (
         <div className="glass-card p-6 space-y-6 animate-slide-up">
-          <h2 className="text-lg font-semibold text-slate-900">Ringkasan Profil</h2>
+          <h2 className="text-lg font-semibold text-slate-900">{t('discover:summary_title')}</h2>
 
           <div className="grid sm:grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-slate-400">Jurusan</span>
-              <p className="text-slate-800 font-medium">{profile.major ?? "—"}</p>
+              <span className="text-slate-400">{t('discover:summary_major')}</span>
+              <p className="text-slate-800 font-medium">{profile.major ? t(`majors:${profile.major.toLowerCase().replace(/ /g, '_')}`) : "—"}</p>
             </div>
             <div>
-              <span className="text-slate-400">Semester</span>
+              <span className="text-slate-400">{t('discover:summary_semester')}</span>
               <p className="text-slate-800 font-medium">{profile.semester ?? "—"}</p>
             </div>
             <div>
-              <span className="text-slate-400">Hard Skills Terisi</span>
+              <span className="text-slate-400">{t('discover:summary_hardskills')}</span>
               <p className="text-slate-800 font-medium">
-                {Object.values(profile.skills).filter((v) => v > 0).length}{" "}
-                skill
+                {t('discover:summary_hardskills_val', { count: Object.values(profile.skills).filter((v) => v > 0).length })}
               </p>
             </div>
             <div>
-              <span className="text-slate-400">Soft Skills</span>
+              <span className="text-slate-400">{t('discover:summary_softskills')}</span>
               <p className="text-slate-800 font-medium">
-                {profile.soft_skills.length} dipilih
+                {t('discover:summary_softskills_val', { count: profile.soft_skills.length })}
               </p>
             </div>
             <div>
-              <span className="text-slate-400">Minat</span>
+              <span className="text-slate-400">{t('discover:summary_interests')}</span>
               <p className="text-slate-800 font-medium">
-                {profile.interests.length} dipilih
+                {t('discover:summary_interests_val', { count: profile.interests.length })}
               </p>
             </div>
             <div>
-              <span className="text-slate-400">Top N</span>
-              <p className="text-slate-800 font-medium">Top {topN} karier</p>
+              <span className="text-slate-400">{t('discover:summary_topn')}</span>
+              <p className="text-slate-800 font-medium">{t('discover:summary_topn_val', { count: topN })}</p>
             </div>
           </div>
 
@@ -461,7 +457,7 @@ export default function DiscoverPage() {
 
           <div className="flex justify-between">
             <button className="btn-secondary" onClick={() => setStep(2)}>
-              ← Kembali
+              {t('discover:btn_prev')}
             </button>
             <button
               className="btn-primary"
@@ -471,12 +467,12 @@ export default function DiscoverPage() {
               {loading ? (
                 <>
                   <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                  Menganalisis…
+                  {t('discover:btn_analyzing')}
                 </>
               ) : (
                 <>
                   <IconCpu size={16} />
-                  Analisis Sekarang
+                  {t('discover:btn_analyze')}
                 </>
               )}
             </button>
@@ -491,15 +487,15 @@ export default function DiscoverPage() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold text-slate-900">
-                Top {result.results.length} Rekomendasi Kariermu
+                {t('discover:result_title', { count: result.results.length })}
               </h2>
               <p className="text-sm text-slate-500 mt-0.5">
-                Engine: {result.engine_version}
+                {t('discover:result_engine')}: {result.engine_version}
                 {result.model_info.available &&
                   result.model_info.cv_accuracy != null && (
                     <>
                       {" "}
-                      · ML Accuracy:{" "}
+                      · {t('discover:result_ml_acc')}:{" "}
                       {(result.model_info.cv_accuracy * 100).toFixed(1)}%
                     </>
                   )}
@@ -507,7 +503,7 @@ export default function DiscoverPage() {
             </div>
             <button className="btn-secondary" onClick={reset}>
               <IconRefresh size={14} />
-              Isi Ulang
+              {t('discover:btn_reset')}
             </button>
           </div>
 
@@ -526,6 +522,7 @@ export default function DiscoverPage() {
               expanded={expandedCard === i}
               onToggle={() => setExpandedCard(expandedCard === i ? null : i)}
               userSkills={profile.skills}
+              t={t}
             />
           ))}
         </div>
@@ -540,6 +537,7 @@ interface ResultCardProps {
   expanded: boolean;
   onToggle: () => void;
   userSkills: Record<string, number>;
+  t: any;
 }
 
 function ResultCard({
@@ -548,6 +546,7 @@ function ResultCard({
   expanded,
   onToggle,
   userSkills,
+  t,
 }: ResultCardProps) {
   const grad = getScoreGradient(result.hybrid_score);
   const rankColors = ["text-yellow-500", "text-slate-400", "text-amber-600"];
@@ -627,24 +626,24 @@ function ResultCard({
             <div>
               <h4 className="section-title flex items-center gap-2">
                 <IconBarChart size={16} className="text-indigo-500" />
-                Rincian Skor
+                {t('discover:score_breakdown')}
               </h4>
               <div className="grid grid-cols-3 gap-3">
                 {[
                   {
-                    label: "Hard Skills",
+                    label: t('discover:sb_hard'),
                     value: result.score_breakdown.hard_skill_score,
                     color: "text-indigo-600",
                     bg: "bg-indigo-50 border-indigo-100",
                   },
                   {
-                    label: "Soft Skills",
+                    label: t('discover:sb_soft'),
                     value: result.score_breakdown.soft_skill_score,
                     color: "text-violet-600",
                     bg: "bg-violet-50 border-violet-100",
                   },
                   {
-                    label: "Minat",
+                    label: t('discover:sb_interest'),
                     value: result.score_breakdown.interest_score,
                     color: "text-emerald-600",
                     bg: "bg-emerald-50 border-emerald-100",
@@ -683,13 +682,13 @@ function ResultCard({
             <div>
               <h4 className="section-title flex items-center gap-2">
                 <IconCheckCircle size={16} className="text-emerald-500" />
-                Kekuatan Kamu
+                {t('discover:why_match')}
               </h4>
               <div className="space-y-3">
                 {result.why_match.map((item) => (
                   <SkillBar
                     key={item.skill}
-                    label={getSkillLabel(item.skill)}
+                    label={t(`skills:${item.skill}`)}
                     current={userSkills[item.skill] ?? item.current}
                     required={item.required}
                     weight={item.weight}
@@ -704,13 +703,13 @@ function ResultCard({
             <div>
               <h4 className="section-title flex items-center gap-2">
                 <IconTrendingUp size={16} className="text-amber-500" />
-                Area Pengembangan
+                {t('discover:gaps')}
               </h4>
               <div className="space-y-3">
                 {result.gaps.map((item) => (
                   <SkillBar
                     key={item.skill}
-                    label={getSkillLabel(item.skill)}
+                    label={t(`skills:${item.skill}`)}
                     current={userSkills[item.skill] ?? item.current}
                     required={item.required}
                     weight={item.weight}
@@ -726,7 +725,7 @@ function ResultCard({
             <div>
               <h4 className="section-title flex items-center gap-2">
                 <IconMicroscope size={16} className="text-indigo-500" />
-                Explainable AI (SHAP)
+                {t('discover:xai')}
               </h4>
               <ShapChart shap={result.shap_explanation} />
             </div>
@@ -740,7 +739,7 @@ function ResultCard({
                 <div>
                   <h4 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-1.5">
                     <IconBookOpen size={14} className="text-indigo-500" />
-                    Belajar Gratis
+                    {t('discover:free_resources')}
                   </h4>
                   <ul className="space-y-1.5">
                     {result.free_resources.map((r, i) => (
@@ -758,7 +757,7 @@ function ResultCard({
                 <div>
                   <h4 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-1.5">
                     <IconCreditCard size={14} className="text-amber-500" />
-                    Kursus Berbayar
+                    {t('discover:paid_resources')}
                   </h4>
                   <ul className="space-y-1.5">
                     {result.paid_resources.map((r, i) => (

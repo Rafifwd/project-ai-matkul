@@ -1,6 +1,6 @@
 {
   "model_type": "RandomForest",
-  "training_date": "2026-06-08T15:49:20.718980+00:00",
+  "training_date": "2026-06-21T08:16:05.802507+00:00",
   "sample_count": 2700,
   "class_count": 10,
   "class_names": [

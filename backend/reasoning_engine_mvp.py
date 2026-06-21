@@ -138,18 +138,56 @@ def composite_score(hard: float, soft: float, interest: float) -> float:
 # Confidence Message
 # ─────────────────────────────────────────────
 
-def confidence_message(score: float) -> str:
+NARRATIVES = {
+    "id": {
+        "conf_low": "Data profil belum cukup kuat untuk memberi rekomendasi tunggal. Lengkapi skill dan pengalaman terlebih dahulu.",
+        "conf_med": "Confidence sedang. Sistem menyarankan eksplorasi beberapa karier, bukan memilih satu saja.",
+        "conf_high": "Confidence cukup baik untuk rekomendasi awal.",
+        "open_high": "Kamu menunjukkan fondasi yang kuat untuk menjadi seorang {career_name}.",
+        "open_med": "Ada potensi yang bisa dikembangkan untuk karier {career_name}.",
+        "open_low": "Karier {career_name} membutuhkan pengembangan lebih lanjut dari profilmu saat ini.",
+        "str_one": "Keahlianmu di bidang {skills} sudah memenuhi standar yang dibutuhkan.",
+        "str_multi": "Keahlianmu di bidang {skills} sudah memenuhi atau melampaui standar yang dibutuhkan—ini menjadi modal penting.",
+        "gap_one": "Area yang perlu diperkuat: {skills} (gap {gap} poin dari standar {req}).",
+        "gap_multi": "Prioritaskan pengembangan di: {skills} untuk mempercepat kesiapanmu memasuki bidang ini.",
+        "soft_match": "Karakter {skills} yang kamu miliki selaras dengan apa yang dibutuhkan di posisi ini.",
+        "soft_low": "Soft skill yang kamu masukkan belum banyak beririsan dengan profil karier ini; pertimbangkan untuk mengembangkan karakter yang relevan.",
+        "int_high": "Minat dan ketertarikanmu sangat selaras dengan bidang kerja karier ini.",
+        "int_low": "Minatmu belum banyak beririsan dengan area ini—pastikan ini memang jalur yang ingin kamu tekuni jangka panjang.",
+        "close_high": "Lanjutkan dengan membangun portofolio konkret dan perkuat skill yang masih kurang.",
+        "close_med": "Fokus pada gap terbesar terlebih dahulu, dan mulai eksplorasi proyek kecil di bidang ini untuk membangun pengalaman nyata.",
+        "close_low": "Mulai dari dasar-dasarnya secara bertahap; ikuti learning path yang disarankan untuk membangun fondasi yang solid."
+    },
+    "en": {
+        "conf_low": "Profile data is not strong enough for a single recommendation. Build your skills and experience first.",
+        "conf_med": "Medium confidence. The system suggests exploring multiple careers rather than choosing just one.",
+        "conf_high": "Confidence is good enough for an initial recommendation.",
+        "open_high": "You show a strong foundation to become a {career_name}.",
+        "open_med": "There is potential that can be developed for the {career_name} career.",
+        "open_low": "The {career_name} career requires further development from your current profile.",
+        "str_one": "Your expertise in {skills} meets the required standards.",
+        "str_multi": "Your expertise in {skills} meets or exceeds the required standards—this is an important asset.",
+        "gap_one": "Area to strengthen: {skills} ({gap}-point gap from the standard of {req}).",
+        "gap_multi": "Prioritize development in: {skills} to accelerate your readiness for this field.",
+        "soft_match": "Your {skills} characteristics align with what is needed in this position.",
+        "soft_low": "The soft skills you provided don't overlap much with this career profile; consider developing relevant traits.",
+        "int_high": "Your interests align very well with the work area of this career.",
+        "int_low": "Your interests don't overlap much with this area—make sure this is the path you want to pursue long-term.",
+        "close_high": "Continue by building a concrete portfolio and strengthen the skills you lack.",
+        "close_med": "Focus on the biggest gaps first, and start exploring small projects in this field to build real experience.",
+        "close_low": "Start from the basics gradually; follow the recommended learning path to build a solid foundation."
+    }
+}
+
+def get_text(lang: str, key: str) -> str:
+    return NARRATIVES.get(lang, {}).get(key) or NARRATIVES["id"][key]
+
+def confidence_message(score: float, lang: str = "id") -> str:
     if score < 40:
-        return (
-            "Data profil belum cukup kuat untuk memberi rekomendasi tunggal. "
-            "Lengkapi skill dan pengalaman terlebih dahulu."
-        )
+        return get_text(lang, "conf_low")
     if score < 65:
-        return (
-            "Confidence sedang. Sistem menyarankan eksplorasi beberapa karier, "
-            "bukan memilih satu saja."
-        )
-    return "Confidence cukup baik untuk rekomendasi awal."
+        return get_text(lang, "conf_med")
+    return get_text(lang, "conf_high")
 
 
 # ─────────────────────────────────────────────
@@ -157,92 +195,38 @@ def confidence_message(score: float) -> str:
 # ─────────────────────────────────────────────
 
 _SKILL_LABELS = {
-    # Data & AI
-    "statistics":           "Statistika",
-    "python":               "Python",
-    "data_cleaning":        "Pembersihan Data",
-    "machine_learning":     "Machine Learning",
-    "model_evaluation":     "Evaluasi Model",
-    "data_visualization":   "Visualisasi Data",
-    "research_methodology": "Metodologi Penelitian",
-    "data_analysis":        "Analisis Data",
-    # Software Engineering
-    "programming":          "Pemrograman",
-    "data_structures":      "Struktur Data & Algoritma",
-    "software_design":      "Desain Perangkat Lunak",
-    "database":             "Basis Data",
-    "software_testing":     "Pengujian Perangkat Lunak",
-    "git":                  "Git & Version Control",
-    "requirements_analysis":"Analisis Kebutuhan",
-    # Cybersecurity & Systems
-    "networking":           "Jaringan Komputer",
-    "security_fundamentals":"Dasar Keamanan",
-    "operating_systems":    "Sistem Operasi",
-    "linux":                "Linux",
-    "risk_analysis":        "Analisis Risiko",
-    "log_analysis":         "Analisis Log",
-    "security_documentation":"Dokumentasi Keamanan",
-    "systems_analysis":     "Analisis Sistem",
-    "troubleshooting":      "Troubleshooting",
-    # Business & Management
-    "business_understanding":    "Pemahaman Bisnis",
-    "process_modeling":          "Pemodelan Proses",
-    "report_writing":            "Penulisan Laporan",
-    "stakeholder_analysis":      "Analisis Stakeholder",
-    "project_planning":          "Perencanaan Proyek",
-    "stakeholder_communication": "Komunikasi Stakeholder",
-    "risk_management":           "Manajemen Risiko",
-    "budget_tracking":           "Pelacakan Anggaran",
-    "team_coordination":         "Koordinasi Tim",
-    "documentation":             "Dokumentasi Teknis",
-    "project_tools":             "Alat Manajemen Proyek",
-    "marketing_understanding":   "Pemahaman Pemasaran",
-    "market_analysis":           "Analisis Pasar",
-    "survey_design":             "Desain Survei",
-    "financial_analysis":        "Analisis Keuangan",
-    "accounting":                "Akuntansi",
-    "budgeting":                 "Penganggaran",
-    "presentation":              "Presentasi",
-    # Design & UX
-    "visual_design":             "Desain Visual",
-    "layout_design":             "Desain Tata Letak",
-    "figma":                     "Figma",
-    "ui_implementation_awareness":"Kesadaran Implementasi UI",
-    "design_systems":            "Sistem Desain",
-    "user_empathy":              "Empati Pengguna",
-    # Other
-    "sql":                       "SQL",
-    "spreadsheet":               "Spreadsheet",
-    "reporting":                 "Pelaporan",
+    "id": {
+        "statistics": "Statistika", "python": "Python", "data_cleaning": "Pembersihan Data", "machine_learning": "Machine Learning", "model_evaluation": "Evaluasi Model", "data_visualization": "Visualisasi Data", "research_methodology": "Metodologi Penelitian", "data_analysis": "Analisis Data", "programming": "Pemrograman", "data_structures": "Struktur Data & Algoritma", "software_design": "Desain Perangkat Lunak", "database": "Basis Data", "software_testing": "Pengujian Perangkat Lunak", "git": "Git & Version Control", "requirements_analysis": "Analisis Kebutuhan", "networking": "Jaringan Komputer", "security_fundamentals": "Dasar Keamanan", "operating_systems": "Sistem Operasi", "linux": "Linux", "risk_analysis": "Analisis Risiko", "log_analysis": "Analisis Log", "security_documentation": "Dokumentasi Keamanan", "systems_analysis": "Analisis Sistem", "troubleshooting": "Troubleshooting", "business_understanding": "Pemahaman Bisnis", "process_modeling": "Pemodelan Proses", "report_writing": "Penulisan Laporan", "stakeholder_analysis": "Analisis Stakeholder", "project_planning": "Perencanaan Proyek", "stakeholder_communication": "Komunikasi Stakeholder", "risk_management": "Manajemen Risiko", "budget_tracking": "Pelacakan Anggaran", "team_coordination": "Koordinasi Tim", "documentation": "Dokumentasi Teknis", "project_tools": "Alat Manajemen Proyek", "marketing_understanding": "Pemahaman Pemasaran", "market_analysis": "Analisis Pasar", "survey_design": "Desain Survei", "financial_analysis": "Analisis Keuangan", "accounting": "Akuntansi", "budgeting": "Penganggaran", "presentation": "Presentasi", "visual_design": "Desain Visual", "layout_design": "Desain Tata Letak", "figma": "Figma", "ui_implementation_awareness": "Kesadaran Implementasi UI", "design_systems": "Sistem Desain", "user_empathy": "Empati Pengguna", "sql": "SQL", "spreadsheet": "Spreadsheet", "reporting": "Pelaporan"
+    },
+    "en": {} # Fallback to title case
 }
 
 _SOFT_LABELS = {
-    "attention_to_detail":    "perhatian terhadap detail",
-    "intellectual_curiosity": "rasa ingin tahu intelektual",
-    "innovation":             "inovasi",
-    "tolerance_for_ambiguity":"toleransi terhadap ketidakpastian",
-    "critical_thinking":      "berpikir kritis",
-    "communication":          "komunikasi",
-    "integrity":              "integritas",
-    "dependability":          "keandalan",
-    "leadership":             "kepemimpinan",
-    "cooperation":            "kerja sama",
-    "stress_tolerance":       "ketahanan terhadap tekanan",
-    "adaptability":           "adaptabilitas",
-    "curiosity":              "rasa ingin tahu",
-    "cautiousness":           "kehati-hatian",
-    "perseverance":           "ketekunan",
-    "originality":            "orisinalitas",
+    "id": {
+        "attention_to_detail": "perhatian terhadap detail", "intellectual_curiosity": "rasa ingin tahu intelektual", "innovation": "inovasi", "tolerance_for_ambiguity": "toleransi terhadap ketidakpastian", "critical_thinking": "berpikir kritis", "communication": "komunikasi", "integrity": "integritas", "dependability": "keandalan", "leadership": "kepemimpinan", "cooperation": "kerja sama", "stress_tolerance": "ketahanan terhadap tekanan", "adaptability": "adaptabilitas", "curiosity": "rasa ingin tahu", "cautiousness": "kehati-hatian", "perseverance": "ketekunan", "originality": "orisinalitas"
+    },
+    "en": {} # Fallback to lowercase replace _
 }
 
+def _label(skill: str, lang: str = "id") -> str:
+    """Return human-readable label for a skill key."""
+    if lang in _SKILL_LABELS and skill in _SKILL_LABELS[lang]:
+        return _SKILL_LABELS[lang][skill]
+    if skill in _SKILL_LABELS["id"]:
+        if lang == "en":
+            return skill.replace("_", " ").title()
+        return _SKILL_LABELS["id"][skill]
+    return skill.replace("_", " ").title()
 
-def _label(skill: str) -> str:
-    """Return human-readable Indonesian label for a skill key."""
-    return _SKILL_LABELS.get(skill, skill.replace("_", " ").title())
 
-
-def _soft_label(skill: str) -> str:
-    return _SOFT_LABELS.get(skill, skill.replace("_", " "))
+def _soft_label(skill: str, lang: str = "id") -> str:
+    if lang in _SOFT_LABELS and skill in _SOFT_LABELS[lang]:
+        return _SOFT_LABELS[lang][skill]
+    if skill in _SOFT_LABELS["id"]:
+        if lang == "en":
+            return skill.replace("_", " ").lower()
+        return _SOFT_LABELS["id"][skill]
+    return skill.replace("_", " ").lower()
 
 
 def generate_narrative(
@@ -253,6 +237,7 @@ def generate_narrative(
     soft_score: float,
     interest_score: float,
     final_score: float,
+    lang: str = "id",
 ) -> str:
     """
     Generate an Indonesian-language explanatory narrative for a career match.
@@ -263,91 +248,57 @@ def generate_narrative(
 
     # ── Opening sentence based on final score ──────────────────────────────────
     if final_score >= 65:
-        opening = (
-            f"Kamu menunjukkan fondasi yang kuat untuk menjadi seorang {career_name}."
-        )
+        opening = get_text(lang, "open_high").format(career_name=career_name)
     elif final_score >= 40:
-        opening = (
-            f"Ada potensi yang bisa dikembangkan untuk karier {career_name}."
-        )
+        opening = get_text(lang, "open_med").format(career_name=career_name)
     else:
-        opening = (
-            f"Karier {career_name} membutuhkan pengembangan lebih lanjut dari profilmu saat ini."
-        )
+        opening = get_text(lang, "open_low").format(career_name=career_name)
 
     parts = [opening]
 
+    joiner = " and " if lang == "en" else " dan "
+
     # ── Strength highlights ────────────────────────────────────────────────────
     if strengths:
-        top_str = [_label(s["skill"]) for s in strengths[:2]]
+        top_str = [_label(s["skill"], lang) for s in strengths[:2]]
         if len(top_str) == 1:
-            parts.append(
-                f"Keahlianmu di bidang {top_str[0]} sudah memenuhi standar yang dibutuhkan."
-            )
+            parts.append(get_text(lang, "str_one").format(skills=top_str[0]))
         else:
-            parts.append(
-                f"Keahlianmu di bidang {' dan '.join(top_str)} sudah memenuhi atau melampaui "
-                f"standar yang dibutuhkan—ini menjadi modal penting."
-            )
+            parts.append(get_text(lang, "str_multi").format(skills=joiner.join(top_str)))
 
     # ── Critical gap highlights ────────────────────────────────────────────────
     if gaps:
-        top_gap = [_label(g["skill"]) for g in gaps[:2]]
+        top_gap = [_label(g["skill"], lang) for g in gaps[:2]]
         if len(top_gap) == 1:
-            parts.append(
-                f"Area yang perlu diperkuat: {top_gap[0]} "
-                f"(gap {gaps[0]['gap']} poin dari standar {gaps[0]['required']})."
-            )
+            parts.append(get_text(lang, "gap_one").format(skills=top_gap[0], gap=gaps[0]['gap'], req=gaps[0]['required']))
         else:
-            parts.append(
-                f"Prioritaskan pengembangan di: {' dan '.join(top_gap)} "
-                f"untuk mempercepat kesiapanmu memasuki bidang ini."
-            )
+            parts.append(get_text(lang, "gap_multi").format(skills=joiner.join(top_gap)))
 
     # ── Soft skill comment ─────────────────────────────────────────────────────
     career_soft = set(career_data.get("soft_skills", []))
     if user_soft:
         matched_soft = user_soft & career_soft
         if matched_soft:
-            examples = [_soft_label(s) for s in list(matched_soft)[:2]]
-            parts.append(
-                f"Karakter {' dan '.join(examples)} yang kamu miliki selaras dengan "
-                f"apa yang dibutuhkan di posisi ini."
-            )
+            examples = [_soft_label(s, lang) for s in list(matched_soft)[:2]]
+            parts.append(get_text(lang, "soft_match").format(skills=joiner.join(examples)))
         elif soft_score < 40:
-            parts.append(
-                "Soft skill yang kamu masukkan belum banyak beririsan dengan profil karier ini; "
-                "pertimbangkan untuk mengembangkan karakter yang relevan."
-            )
+            parts.append(get_text(lang, "soft_low"))
 
     # ── Interest comment ───────────────────────────────────────────────────────
     if interest_score == NEUTRAL_SCORE:
         pass  # user did not provide interests — stay silent
     elif interest_score >= 66:
-        parts.append(
-            "Minat dan ketertarikanmu sangat selaras dengan bidang kerja karier ini."
-        )
+        parts.append(get_text(lang, "int_high"))
     elif interest_score < 33:
-        parts.append(
-            "Minatmu belum banyak beririsan dengan area ini—pastikan ini memang jalur "
-            "yang ingin kamu tekuni jangka panjang."
-        )
+        parts.append(get_text(lang, "int_low"))
 
     # ── Closing call-to-action ─────────────────────────────────────────────────
     if final_score >= 65:
-        parts.append(
-            "Lanjutkan dengan membangun portofolio konkret dan perkuat skill yang masih kurang."
-        )
+        parts.append(get_text(lang, "close_high"))
     elif final_score >= 40:
-        parts.append(
-            "Fokus pada gap terbesar terlebih dahulu, dan mulai eksplorasi proyek kecil "
-            "di bidang ini untuk membangun pengalaman nyata."
-        )
+        parts.append(get_text(lang, "close_med"))
     else:
-        parts.append(
-            "Mulai dari dasar-dasarnya secara bertahap; ikuti learning path yang disarankan "
-            "untuk membangun fondasi yang solid."
-        )
+        parts.append(get_text(lang, "close_low"))
 
     return " ".join(parts)
 
@@ -356,7 +307,7 @@ def generate_narrative(
 # Mode Functions
 # ─────────────────────────────────────────────
 
-def analyze_career_full(career_name: str, career_data: dict, user_profile: dict) -> dict:
+def analyze_career_full(career_name: str, career_data: dict, user_profile: dict, lang: str = "id") -> dict:
     """Run all scoring dimensions and return a full analysis dict."""
     hard    = score_hard_skills(career_data, user_profile)
     soft    = score_soft_skills(career_data, user_profile)
@@ -365,7 +316,7 @@ def analyze_career_full(career_name: str, career_data: dict, user_profile: dict)
 
     narrative = generate_narrative(
         career_name, career_data, user_profile,
-        hard, soft, intrest, final,
+        hard, soft, intrest, final, lang=lang
     )
 
     return {
@@ -375,7 +326,7 @@ def analyze_career_full(career_name: str, career_data: dict, user_profile: dict)
             "soft_skill_score":  soft,
             "interest_score":    intrest,
         },
-        "confidence_message": confidence_message(final),
+        "confidence_message": confidence_message(final, lang=lang),
         "narrative":          narrative,
         "strengths":          hard["strengths"],
         "gaps":               hard["gaps"],
@@ -402,12 +353,12 @@ def discovery_mode(user_profile: dict, kb: dict, top_n: int = 3) -> list:
     return results[:top_n]
 
 
-def validation_mode(target_career: str, user_profile: dict, kb: dict) -> dict:
+def validation_mode(target_career: str, user_profile: dict, kb: dict, lang: str = "id") -> dict:
     if target_career not in kb:
         raise ValueError(f"Career tidak ditemukan: {target_career}")
 
     career_data = kb[target_career]
-    analysis    = analyze_career_full(target_career, career_data, user_profile)
+    analysis    = analyze_career_full(target_career, career_data, user_profile, lang=lang)
 
     learning_order = [
         {
@@ -415,6 +366,9 @@ def validation_mode(target_career: str, user_profile: dict, kb: dict) -> dict:
             "reason": (
                 f"Gap {item['gap']} poin dari level minimal {item['required']}. "
                 f"Bobot prioritas skill ini: {item['weight']}x."
+            ) if lang == "id" else (
+                f"{item['gap']}-point gap from minimum level {item['required']}. "
+                f"Priority weight for this skill: {item['weight']}x."
             ),
         }
         for item in analysis["gaps"]
@@ -433,8 +387,9 @@ def validation_mode(target_career: str, user_profile: dict, kb: dict) -> dict:
         "free_resources":             career_data["resources"]["free"],
         "paid_resources":             career_data["resources"]["paid"],
         "ethical_notice": (
-            "Rekomendasi ini tidak membatasi peluang berdasarkan jurusan. "
-            "Jurusan hanya digunakan sebagai konteks awal roadmap."
+            "Rekomendasi ini tidak membatasi peluang berdasarkan jurusan. Jurusan hanya digunakan sebagai konteks awal roadmap." 
+            if lang == "id" else 
+            "This recommendation does not limit opportunities based on major. The major is only used as initial roadmap context."
         ),
     }
 

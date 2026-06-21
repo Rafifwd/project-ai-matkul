@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { getCareers } from '../api/client'
 import type { CareerListItem } from '../types/api'
-import { getSkillLabel } from '../constants/skills'
 import { IconAlertTriangle, IconClipboard } from '../components/ui/Icons'
 
 export default function CareersPage() {
@@ -10,6 +10,7 @@ export default function CareersPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [search, setSearch] = useState('')
+  const { t } = useTranslation(['careers'])
 
   useEffect(() => {
     getCareers()
@@ -27,7 +28,7 @@ export default function CareersPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
-          <p className="text-slate-500">Memuat katalog karier…</p>
+          <p className="text-slate-500">{t('careers:loading')}</p>
         </div>
       </div>
     )
@@ -49,9 +50,9 @@ export default function CareersPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-fade-in">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">Katalog Karier</h1>
+        <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('careers:title')}</h1>
         <p className="text-slate-500">
-          {careers.length} karier IT terkurasi berbasis data O*NET. Klik untuk melihat detail skill &amp; roadmap.
+          {t('careers:subtitle', { count: careers.length })}
         </p>
       </div>
 
@@ -60,7 +61,7 @@ export default function CareersPage() {
         <input
           type="text"
           className="input-field"
-          placeholder="Cari karier…"
+          placeholder={t('careers:search_placeholder')}
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
@@ -68,7 +69,7 @@ export default function CareersPage() {
 
       {/* Grid */}
       {filtered.length === 0 ? (
-        <p className="text-slate-400 py-12 text-center">Tidak ditemukan karier yang cocok.</p>
+        <p className="text-slate-400 py-12 text-center">{t('careers:not_found')}</p>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {filtered.map(career => (
@@ -81,6 +82,8 @@ export default function CareersPage() {
 }
 
 function CareerCard({ career }: { career: CareerListItem }) {
+  const { t } = useTranslation(['skills', 'soft_skills'])
+
   const topSkills = Object.entries(career.hard_skills)
     .sort(([, a], [, b]) => b - a)
     .slice(0, 4)
@@ -118,7 +121,7 @@ function CareerCard({ career }: { career: CareerListItem }) {
         {topSkills.map(([skill, level]) => (
           <div key={skill} className="flex items-center gap-2">
             <span className="text-xs text-slate-500 w-28 flex-shrink-0 truncate">
-              {getSkillLabel(skill)}
+              {t(`skills:${skill}`)}
             </span>
             <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
               <div
@@ -136,7 +139,7 @@ function CareerCard({ career }: { career: CareerListItem }) {
         <div className="flex flex-wrap gap-1.5">
           {career.soft_skills.slice(0, 3).map(sk => (
             <span key={sk} className="badge-info text-xs">
-              {sk.replace(/_/g, ' ')}
+              {t(`soft_skills:${sk}`)}
             </span>
           ))}
           {career.soft_skills.length > 3 && (

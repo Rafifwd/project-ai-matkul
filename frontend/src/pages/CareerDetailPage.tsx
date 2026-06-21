@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   RadarChart,
   PolarGrid,
@@ -10,7 +11,6 @@ import {
 } from "recharts";
 import { getCareerDetail } from "../api/client";
 import type { CareerDetail } from "../types/api";
-import { getSkillLabel } from "../constants/skills";
 import { ResourceItem } from "../utils/resources";
 import {
   IconCompass,
@@ -26,6 +26,7 @@ import {
 
 export default function CareerDetailPage() {
   const { name } = useParams<{ name: string }>();
+  const { t } = useTranslation(['skills', 'soft_skills']);
   const [career, setCareer] = useState<CareerDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -70,7 +71,7 @@ export default function CareerDetailPage() {
     .sort(([, a], [, b]) => b - a)
     .slice(0, 6)
     .map(([skill, level]) => ({
-      skill: getSkillLabel(skill),
+      skill: t(`skills:${skill}`),
       required: level,
       fullMark: 100,
     }));
@@ -175,7 +176,7 @@ export default function CareerDetailPage() {
                 return (
                   <div key={skill} className="flex items-center gap-3">
                     <span className="text-xs text-slate-500 w-36 flex-shrink-0">
-                      {getSkillLabel(skill)}
+                      {t(`skills:${skill}`)}
                     </span>
                     <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                       <div
@@ -206,7 +207,7 @@ export default function CareerDetailPage() {
             <div className="flex flex-wrap gap-2">
               {career.soft_skills.map((sk) => (
                 <span key={sk} className="badge-info">
-                  {sk.replace(/_/g, " ")}
+                  {t(`soft_skills:${sk}`)}
                 </span>
               ))}
             </div>
@@ -301,7 +302,45 @@ export default function CareerDetailPage() {
             <IconLink size={16} className="text-indigo-500" />
             Referensi O*NET
           </h2>
-          <p className="text-sm text-slate-600">{career.onet_evidence}</p>
+          {typeof career.onet_evidence === 'string' ? (
+            <p className="text-sm text-slate-600">{career.onet_evidence}</p>
+          ) : (
+            <div className="space-y-4">
+              {career.onet_evidence.top_work_styles && career.onet_evidence.top_work_styles.length > 0 && (
+                <div>
+                  <p className="text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wide">Work Styles</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {career.onet_evidence.top_work_styles.map((s, i) => (
+                      <span key={i} className="badge-info text-xs">{s}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {career.onet_evidence.top_interest_areas && career.onet_evidence.top_interest_areas.length > 0 && (
+                <div>
+                  <p className="text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wide">Interest Areas</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {career.onet_evidence.top_interest_areas.map((s, i) => (
+                      <span key={i} className="badge text-xs bg-violet-100 text-violet-700 border-violet-200">{s}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {career.onet_evidence.representative_tasks && career.onet_evidence.representative_tasks.length > 0 && (
+                <div>
+                  <p className="text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wide">Representative Tasks</p>
+                  <ul className="space-y-1.5">
+                    {career.onet_evidence.representative_tasks.map((task, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-slate-600">
+                        <span className="text-indigo-400 mt-0.5 flex-shrink-0">→</span>
+                        {task}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>

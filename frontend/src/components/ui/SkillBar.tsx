@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 interface SkillBarProps {
   label: string
   current?: number
@@ -7,6 +9,7 @@ interface SkillBarProps {
 }
 
 export default function SkillBar({ label, current, required, weight, showGap }: SkillBarProps) {
+  const { t } = useTranslation('common')
   const displayCurrent = current ?? 0
   const displayRequired = required ?? 0
   const gap = Math.max(0, displayRequired - displayCurrent)
@@ -24,10 +27,10 @@ export default function SkillBar({ label, current, required, weight, showGap }: 
   const badgeLabel =
     weight !== undefined
       ? weight >= 2.5
-        ? 'Kritikal'
+        ? t('critical')
         : weight >= 1.5
-        ? 'Penting'
-        : 'Standar'
+        ? t('important')
+        : t('standard')
       : null
 
   const dotColor =
@@ -92,7 +95,7 @@ export default function SkillBar({ label, current, required, weight, showGap }: 
       </div>
 
       {showGap && gap > 0 && (
-        <p className="text-xs text-amber-600">Perlu meningkatkan {gap} poin</p>
+        <p className="text-xs text-amber-600">{t('needs_improvement', { gap })}</p>
       )}
     </div>
   )
