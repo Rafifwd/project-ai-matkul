@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 import threading
 import uuid
 from datetime import datetime, timezone
@@ -50,9 +51,12 @@ app = FastAPI(
     version="0.3.0",
 )
 
+_raw_origins = os.environ.get("ALLOWED_ORIGINS", "http://localhost:5173")
+_allowed_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -317,12 +321,30 @@ def model_info():
     return info
 
 
+def _is_production() -> bool:
+    """True when running inside Vercel (env vars set automatically by the platform)."""
+    return bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
+
+
 @app.post("/api/train")
 def trigger_training(lang: Literal["id", "en"] = "id"):
     """
     Trigger model retraining (async background job).
     Returns immediately with job ID and status.
+    Only available in local development — blocked on Vercel.
     """
+    if _is_production():
+        raise HTTPException(
+            status_code=403,
+            detail=(
+                "Training tidak tersedia di production. "
+                "Jalankan 'python ml_trainer.py' secara lokal, lalu commit artefak model ke Git."
+                if lang == "id" else
+                "Training is not available in production. "
+                "Run 'python ml_trainer.py' locally, then commit the model artifacts to Git."
+            ),
+        )
+
     global _training_state
 
     with _training_lock:
