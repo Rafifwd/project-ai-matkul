@@ -8,7 +8,6 @@
     "backend": {
       "entrypoint": "backend/main.py",
       "routePrefix": "/api",
-      "framework": "fastapi",
       "excludeFiles": "backend/data/training_data.csv"
     }
   }
