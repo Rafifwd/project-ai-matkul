@@ -220,7 +220,7 @@ def root():
     }
 
 
-@app.get("/api/health")
+@app.get("/health")
 def health_check():
     model_info = get_model_info()
     return {
@@ -231,7 +231,7 @@ def health_check():
     }
 
 
-@app.get("/api/careers")
+@app.get("/careers")
 def get_careers():
     careers = []
     for name, data in kb.items():
@@ -251,7 +251,7 @@ def get_careers():
     }
 
 
-@app.get("/api/careers/{career_name}")
+@app.get("/careers/{career_name}")
 def get_career_detail(career_name: str):
     if career_name not in kb:
         raise HTTPException(status_code=404, detail=f"Career not found: {career_name}")
@@ -261,7 +261,7 @@ def get_career_detail(career_name: str):
     }
 
 
-@app.post("/api/analyze")
+@app.post("/analyze")
 def analyze_career(request: AnalyzeRequest):
     profile_dict = to_dict(request.profile)
     results = hybrid_discovery_mode(profile_dict, kb, top_n=request.top_n, lang=request.lang)
@@ -288,7 +288,7 @@ def analyze_career(request: AnalyzeRequest):
     }
 
 
-@app.post("/api/validate")
+@app.post("/validate")
 def validate_target_career(request: ValidateRequest):
     profile_dict = to_dict(request.profile)
     try:
@@ -314,7 +314,7 @@ def validate_target_career(request: ValidateRequest):
 # NEW Endpoints — v0.3.0
 # ─────────────────────────────────────────────
 
-@app.get("/api/model/info")
+@app.get("/model/info")
 def model_info():
     """Return info about the currently active ML model."""
     info = get_model_info()
@@ -326,7 +326,7 @@ def _is_production() -> bool:
     return bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
 
 
-@app.post("/api/train")
+@app.post("/train")
 def trigger_training(lang: Literal["id", "en"] = "id"):
     """
     Trigger model retraining (async background job).
@@ -388,7 +388,7 @@ def trigger_training(lang: Literal["id", "en"] = "id"):
     }
 
 
-@app.get("/api/train/status")
+@app.get("/train/status")
 def training_status():
     """Check status of the current/last training job."""
     with _training_lock:

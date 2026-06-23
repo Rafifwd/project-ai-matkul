@@ -47,3 +47,4 @@ frontend/skills-lock.json
 # The trained model artifacts (backend/models/*.pkl etc.) are committed intentionally
 # as static deploy artifacts (training runs locally, not on Vercel).
 backend/data/training_data.csv
+HANDOFF.md
