@@ -23,9 +23,12 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Literal
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 
 from hybrid_engine import (
     get_model_info,
@@ -51,7 +54,8 @@ app = FastAPI(
     version="0.3.0",
 )
 
-_raw_origins = os.environ.get("ALLOWED_ORIGINS", "http://localhost:5173")
+_is_prod = bool(os.environ.get("VERCEL") or os.environ.get("VERCEL_ENV"))
+_raw_origins = os.environ.get("ALLOWED_ORIGINS", "" if _is_prod else "http://localhost:5173")
 _allowed_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
 
 app.add_middleware(
@@ -61,6 +65,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # ─────────────────────────────────────────────
 # Startup
@@ -262,9 +270,10 @@ def get_career_detail(career_name: str):
 
 
 @app.post("/analyze")
-def analyze_career(request: AnalyzeRequest):
-    profile_dict = to_dict(request.profile)
-    results = hybrid_discovery_mode(profile_dict, kb, top_n=request.top_n, lang=request.lang)
+@limiter.limit("20/minute")
+def analyze_career(request: Request, body: AnalyzeRequest):
+    profile_dict = to_dict(body.profile)
+    results = hybrid_discovery_mode(profile_dict, kb, top_n=body.top_n, lang=body.lang)
 
     model_info = get_model_info()
 
@@ -281,7 +290,7 @@ def analyze_career(request: AnalyzeRequest):
         "ethical_notice": (
             "Rekomendasi ini tidak membatasi peluang berdasarkan jurusan. "
             "Jurusan hanya digunakan sebagai konteks awal roadmap."
-            if request.lang == "id" else
+            if body.lang == "id" else
             "This recommendation does not limit opportunities based on major. "
             "The major is only used as initial roadmap context."
         ),
@@ -289,10 +298,11 @@ def analyze_career(request: AnalyzeRequest):
 
 
 @app.post("/validate")
-def validate_target_career(request: ValidateRequest):
-    profile_dict = to_dict(request.profile)
+@limiter.limit("20/minute")
+def validate_target_career(request: Request, body: ValidateRequest):
+    profile_dict = to_dict(body.profile)
     try:
-        result = hybrid_validation_mode(request.target_career, profile_dict, kb, lang=request.lang)
+        result = hybrid_validation_mode(body.target_career, profile_dict, kb, lang=body.lang)
     except ValueError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 

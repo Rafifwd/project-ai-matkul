@@ -45,7 +45,8 @@ project-ai-matkul/
 │   ├── xai_explainer.py    # SHAP explanation generation
 │   ├── data/               # Synthetic data generation logic
 │   ├── models/             # Trained ML models (.pkl)
-│   └── requirements.txt    # Backend dependencies
+│   ├── pyproject.toml      # Python version pin and dependencies
+│   └── uv.lock             # Pinned dependency versions
 └── README.md               # This file
 ```
 
@@ -53,19 +54,14 @@ project-ai-matkul/
 
 ### Prerequisites
 - **Frontend:** Node.js 18+
-- **Backend:** Python 3.11+
+- **Backend:** Python 3.12+ (required by `pyproject.toml`), `uv` for dependency management
 
 ### Backend Setup
 ```bash
 cd backend
-python -m venv venv
 
-# Activate Virtual Environment
-source venv/bin/activate # Linux/macOS
-venv\Scripts\activate    # Windows
-
-# Install Dependencies
-pip install -r requirements.txt
+# Install Dependencies (uv creates and manages .venv/ automatically)
+uv sync
 
 # Run Server (Available at http://localhost:8000)
 uvicorn main:app --reload --port 8000

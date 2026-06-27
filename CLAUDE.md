@@ -47,8 +47,8 @@ project-ai-matkul/
 │   ├── xai_explainer.py    # SHAP-based narrative generation
 │   ├── data/               # Synthetic data generator (O*NET-informed); training_data.csv gitignored
 │   ├── models/             # Trained .pkl artifacts — COMMITTED to Git (deployed as static files)
-│   ├── requirements.txt
 │   ├── pyproject.toml      # Python version pin for Vercel (>=3.12)
+│   ├── uv.lock             # Pinned dependency versions for reproducible builds
 │   └── run_backend.ps1     # Windows PowerShell runner
 ├── vercel.json             # Vercel monorepo config
 └── README.md
@@ -64,11 +64,10 @@ project-ai-matkul/
 # From project root (Windows)
 .\backend\run_backend.ps1
 
-# Or manually (activate venv first):
+# Or manually (uv manages the venv):
 cd backend
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
+uv sync
+.venv\Scripts\activate
 python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
@@ -115,7 +114,7 @@ deployment simple and free.
 | `.\backend\run_backend.ps1` | Start FastAPI dev server (Windows) |
 | `npm run dev` | Start Vite frontend dev server |
 | `npm run build` | Type-check + production build |
-| `pip install -r requirements.txt` | Install Python deps |
+| `uv sync` | Install Python deps (creates `.venv/` automatically) |
 
 ---
 
@@ -153,7 +152,7 @@ deployment simple and free.
 - Update `src/types/api.ts` when adding or changing API response fields.
 
 **NEVER:**
-- Add new Python packages without updating `backend/requirements.txt`.
+- Add new Python packages without updating `backend/pyproject.toml` and re-running `uv lock`.
 - Add new npm packages without a clear reason (existing stack covers most needs).
 - Hardcode `http://127.0.0.1:8000` anywhere — use `VITE_API_URL` env var via `client.ts`.
 - Delete or untrack the committed model artifacts in `backend/models/` — they are intentionally versioned.
