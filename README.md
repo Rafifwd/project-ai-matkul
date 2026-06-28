@@ -27,7 +27,7 @@ The underlying system uses a Hybrid approach:
 - **Rule-Based Engine:** Uses predefined knowledge bases with dynamic weights for hard skills, soft skills, and interests.
 - **Machine Learning Layer:** Trains models (RandomForest / GradientBoosting) on synthetic, O*NET-informed data to output prediction probabilities.
 - **XAI Explainer:** Utilizes SHAP (SHapley Additive exPlanations) to interpret ML predictions and provide human-readable narratives.
-- **Composite Score:** Integrates the rule score and ML probability to generate a final hybrid score for recommendations.
+- **Composite Score:** Integrates the rule-based logic and ML probability to predict the final career match. The engine calculates the prediction by weighting the strict knowledge-base score against the data-driven ML probability (e.g., using a configurable Alpha weight). This approach ensures that the final forecast relies on both established domain rules and underlying data patterns.
 
 ## Project Structure
 ```text
