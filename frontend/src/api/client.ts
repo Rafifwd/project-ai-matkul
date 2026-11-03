@@ -1,5 +1,4 @@
 import axios from 'axios'
-import i18n from '../i18n'
 import type {
   UserProfile,
   AnalyzeResponse,
@@ -10,13 +9,12 @@ import type {
   TrainingStatus,
   HealthCheck,
 } from '../types/api'
+import type { Lang } from '../constants/taxonomy'
 
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  timeout: 30000,
+  headers: { 'Content-Type': 'application/json' },
+  timeout: 45000,
 })
 
 export const checkApiHealth = async (): Promise<HealthCheck> => {
@@ -36,21 +34,19 @@ export const getCareerDetail = async (careerName: string): Promise<CareerDetail>
 
 export const analyzeCareer = async (
   profile: UserProfile,
-  topN: number = 3,
+  topN: number,
+  lang: Lang,
 ): Promise<AnalyzeResponse> => {
-  const response = await API.post('/api/analyze', { profile, top_n: topN, lang: i18n.language })
+  const response = await API.post('/api/analyze', { profile, top_n: topN, lang })
   return response.data
 }
 
 export const validateTargetCareer = async (
   targetCareer: string,
   profile: UserProfile,
+  lang: Lang,
 ): Promise<ValidateResponse> => {
-  const response = await API.post('/api/validate', {
-    target_career: targetCareer,
-    profile,
-    lang: i18n.language,
-  })
+  const response = await API.post('/api/validate', { target_career: targetCareer, profile, lang })
   return response.data
 }
 
@@ -59,12 +55,12 @@ export const getModelInfo = async (): Promise<ModelInfo> => {
   return response.data
 }
 
-export const triggerTraining = async (): Promise<{
+export const triggerTraining = async (lang: Lang): Promise<{
   status: string
   job_id: string
   message: string
 }> => {
-  const response = await API.post('/api/train', null, { params: { lang: i18n.language } })
+  const response = await API.post('/api/train', null, { params: { lang } })
   return response.data
 }
 

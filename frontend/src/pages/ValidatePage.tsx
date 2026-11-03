@@ -1,794 +1,364 @@
-import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { validateTargetCareer, getCareers } from "../api/client";
-import type { UserProfile, ValidateResponse } from "../types/api";
-import {
-  SKILL_CATEGORIES,
-  SOFT_SKILLS,
-  INTERESTS,
-  MAJORS,
-  getScoreGradient,
-} from "../constants/skills";
-import HybridScoreBadge from "../components/ui/HybridScoreBadge";
-import ShapChart from "../components/ui/ShapChart";
-import SkillBar from "../components/ui/SkillBar";
-import { ResourceItem } from "../utils/resources";
-import {
-  IconCheckCircle,
-  IconRefresh,
-  IconSearch,
-  IconTarget,
-  IconBarChart,
-  IconLightbulb,
-  IconTrendingUp,
-  IconAlertTriangle,
-  IconMicroscope,
-  IconBookOpen,
-  IconCreditCard,
-  IconBriefcase,
-  IconMap,
-  IconInfo,
-  IconBrain,
-  IconCode,
-  IconShield,
-  IconPieChart,
-  IconPalette,
-} from "../components/ui/Icons";
-
-function buildEmptyProfile(): UserProfile {
-  return {
-    major: null,
-    semester: null,
-    skills: {},
-    soft_skills: [],
-    interests: [],
-    experiences: [],
-    preferences: {},
-  };
-}
-
-// STEPS dynamically generated inside component
-const CATEGORY_ICONS = [IconBrain, IconCode, IconShield, IconPieChart, IconPalette];
+import { useEffect, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
+import { useCopy, useSession } from '../session'
+import { getCareers, validateTargetCareer } from '../api/client'
+import type { CareerListItem, ValidateResponse } from '../types/api'
+import PageHead from '../components/ui/PageHead'
+import { ContextStep, SkillsStep, SoftStep, InterestsStep } from '../components/ProfileSteps'
+import { labelFor, scoreTone } from '../constants/taxonomy'
+import { ScoreBar, ScoreFigure } from '../components/ui/Score'
+import ShapBar from '../components/ui/ShapBar'
+import ResourceList from '../components/ui/ResourceList'
+import { pad2 } from '../constants/resources'
 
 export default function ValidatePage() {
-  const { t } = useTranslation(['validate', 'discover', 'skills', 'soft_skills', 'interests', 'majors', 'common']);
-  const STEPS = [
-    t('validate:step_career', 'Pilih Karier'),
-    t('discover:step_hardskills'),
-    t('discover:step_softskills'),
-    t('validate:step_review', 'Review'),
-  ];
-  const [searchParams] = useSearchParams();
-  const [step, setStep] = useState(0);
-  const [targetCareer, setTargetCareer] = useState(
-    searchParams.get("target") ?? "",
-  );
-  const [careerOptions, setCareerOptions] = useState<string[]>([]);
-  const [profile, setProfile] = useState<UserProfile>(buildEmptyProfile());
-  const [activeSkillCat, setActiveSkillCat] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<ValidateResponse | null>(null);
+  const { t, lang } = useCopy()
+  const { profile, patchProfile } = useSession()
+  const [params, setParams] = useSearchParams()
+  const initialTarget = params.get('career') ?? ''
+
+  const [careers, setCareers] = useState<CareerListItem[] | null>(null)
+  const [target, setTarget] = useState(initialTarget)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [result, setResult] = useState<ValidateResponse | null>(null)
+  const [profileOpen, setProfileOpen] = useState(false)
 
   useEffect(() => {
+    let active = true
     getCareers()
-      .then((careers) => setCareerOptions(careers.map((c) => c.name)))
-      .catch(() => {});
-  }, []);
+      .then((c) => active && setCareers(c))
+      .catch(() => active && setError(t('common.error')))
+    return () => {
+      active = false
+    }
+  }, [t])
 
-  // If target was pre-set from URL, advance to step 1
   useEffect(() => {
-    if (searchParams.get("target")) {
-      setStep(1);
+    if (initialTarget) setTarget(initialTarget)
+  }, [initialTarget])
+
+  const run = async () => {
+    if (!target) {
+      setError(t('validate.pickFirst'))
+      return
     }
-  }, []);
-
-  function setSkill(key: string, val: number) {
-    setProfile((p) => ({ ...p, skills: { ...p.skills, [key]: val } }));
-  }
-
-  function toggleSoftSkill(key: string) {
-    setProfile((p) => ({
-      ...p,
-      soft_skills: p.soft_skills.includes(key)
-        ? p.soft_skills.filter((s) => s !== key)
-        : [...p.soft_skills, key],
-    }));
-  }
-
-  function toggleInterest(key: string) {
-    setProfile((p) => ({
-      ...p,
-      interests: p.interests.includes(key)
-        ? p.interests.filter((i) => i !== key)
-        : [...p.interests, key],
-    }));
-  }
-
-  async function handleSubmit() {
-    if (!targetCareer) {
-      setError("Pilih target karier terlebih dahulu");
-      return;
-    }
-    setLoading(true);
-    setError(null);
+    setBusy(true)
+    setError(null)
     try {
-      const res = await validateTargetCareer(targetCareer, profile);
-      setResult(res);
-      setStep(4);
-    } catch (e: unknown) {
-      const err = e as {
-        response?: { data?: { detail?: string } };
-        message?: string;
-      };
-      setError(
-        err.response?.data?.detail ?? err.message ?? t('discover:error_default'),
-      );
+      const res = await validateTargetCareer(target, profile, lang)
+      setResult(res)
+      setParams({ career: target }, { replace: true })
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } catch {
+      setError(t('validate.error'))
     } finally {
-      setLoading(false);
+      setBusy(false)
     }
   }
 
-  function reset() {
-    setStep(0);
-    setTargetCareer("");
-    setProfile(buildEmptyProfile());
-    setResult(null);
-    setError(null);
+  if (result) {
+    return <ValidateResult response={result} onEdit={() => setResult(null)} />
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-fade-in">
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600">
-            <IconCheckCircle size={20} />
-          </div>
-          <h1 className="text-3xl font-bold text-slate-900">
-            {t('validate:title')}
-          </h1>
-        </div>
-        <p className="text-slate-500">
-          {t('validate:subtitle')}
-        </p>
-      </div>
+    <div className="mx-auto max-w-sheet px-5 md:px-10">
+      <PageHead eyebrow={t('nav.validate')} title={t('validate.title')} lede={t('validate.lede')} />
 
-      {/* Stepper */}
-      {step < 4 && (
-        <div className="flex items-center gap-2 mb-8 overflow-x-auto pb-2">
-          {STEPS.map((label, i) => (
-            <div key={label} className="flex items-center gap-2 flex-shrink-0">
-              <button
-                onClick={() => i < step && setStep(i)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  i === step
-                    ? "bg-indigo-100 text-indigo-700 border border-indigo-200"
-                    : i < step
-                      ? "text-emerald-600 cursor-pointer hover:bg-slate-100"
-                      : "text-slate-400 cursor-default"
-                }`}
-              >
-                <span
-                  className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold ${
-                    i === step
-                      ? "bg-indigo-500 text-white"
-                      : i < step
-                        ? "bg-emerald-500 text-white"
-                        : "bg-slate-200 text-slate-400"
-                  }`}
-                >
-                  {i < step ? "✓" : i + 1}
-                </span>
-                {label}
-              </button>
-              {i < STEPS.length - 1 && (
-                <div
-                  className={`w-6 h-px ${i < step ? "bg-emerald-400" : "bg-slate-200"}`}
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="grid gap-10 py-10 md:grid-cols-[20rem_minmax(0,1fr)] md:gap-14">
+        <div className="md:sticky md:top-20 md:self-start">
+          <label htmlFor="target" className="label">
+            {t('validate.target')}
+          </label>
+          <select
+            id="target"
+            className="field mt-2"
+            value={target}
+            onChange={(e) => setTarget(e.target.value)}
+          >
+            <option value="">—</option>
+            {(careers ?? []).map((c) => (
+              <option key={c.name} value={c.name}>
+                {c.name}
+              </option>
+            ))}
+          </select>
 
-      {/* ── STEP 0: Pilih Karier ── */}
-      {step === 0 && (
-        <div className="glass-card p-6 space-y-6 animate-slide-up">
-          <h2 className="text-lg font-semibold text-slate-900">
-            {t('validate:target_label')}
-          </h2>
-          <p className="text-sm text-slate-500">
-            {t('validate:subtitle')}
-          </p>
+          <button type="button" className="btn mt-4 w-full !py-3" onClick={run} disabled={busy || !target}>
+            {busy ? t('validate.running') : t('validate.run')}
+          </button>
 
-          <div>
-            <label className="label">{t('validate:target_label')}</label>
-            <div className="relative">
-              <select
-                className="select-field"
-                value={targetCareer}
-                onChange={(e) => setTargetCareer(e.target.value)}
-              >
-                <option value="">{t('validate:target_placeholder')}</option>
-                {careerOptions.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-              <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
-                ▾
-              </div>
-            </div>
-          </div>
-
-          {targetCareer && (
-            <div className="flex items-center gap-2 p-3 bg-indigo-50 border border-indigo-200 rounded-xl text-sm text-indigo-800">
-              <IconTarget size={16} className="text-indigo-500 flex-shrink-0" />
-              Target: <strong>{targetCareer}</strong>
-            </div>
-          )}
-
-          <div>
-            <label className="label">{t('discover:major_label')}</label>
-            <div className="relative">
-              <select
-                className="select-field"
-                value={profile.major ?? ""}
-                onChange={(e) =>
-                  setProfile((p) => ({ ...p, major: e.target.value || null }))
-                }
-              >
-                <option value="">{t('discover:major_placeholder')}</option>
-                {MAJORS.map((m) => (
-                  <option key={m} value={m}>
-                    {t(`majors:${m.toLowerCase().replace(/ /g, '_')}`)}
-                  </option>
-                ))}
-              </select>
-              <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
-                ▾
-              </div>
-            </div>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div>
-              <label className="label">{t('discover:semester_label')}</label>
-              <input
-                type="number"
-                min={1}
-                max={14}
-                className="input-field"
-                placeholder={t('discover:semester_placeholder')}
-                value={profile.semester ?? ""}
-                onChange={(e) =>
-                  setProfile((p) => ({
-                    ...p,
-                    semester: e.target.value ? parseInt(e.target.value) : null,
-                  }))
-                }
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-end">
-            <button
-              className="btn-primary"
-              onClick={() => setStep(1)}
-              disabled={!targetCareer}
-            >
-              {t('discover:btn_next')}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ── STEP 1: Hard Skills ── */}
-      {step === 1 && (
-        <div className="glass-card p-6 space-y-6 animate-slide-up">
-          <div className="flex items-center gap-3">
-            <h2 className="text-lg font-semibold text-slate-900">
-              {t('discover:level_hardskills_title')}
-            </h2>
-            <span className="badge-info">{targetCareer}</span>
-          </div>
-          <p className="text-sm text-slate-500">
-            {t('discover:level_hardskills_desc')}
-          </p>
-
-          {/* Category tabs */}
-          <div className="flex flex-wrap gap-2">
-            {SKILL_CATEGORIES.map((cat, i) => {
-              const CatIcon = CATEGORY_ICONS[i];
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setActiveSkillCat(i)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                    activeSkillCat === i
-                      ? "bg-indigo-100 text-indigo-700 border border-indigo-200"
-                      : "text-slate-500 hover:text-slate-800 hover:bg-slate-100 border border-transparent"
-                  }`}
-                >
-                  <CatIcon size={14} />
-                  {cat.label}
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="space-y-5 max-h-96 overflow-y-auto pr-2">
-            {SKILL_CATEGORIES[activeSkillCat].skills.map((sk) => {
-              const val = profile.skills[sk.key] ?? 0;
-              return (
-                <div key={sk.key} className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-700">{t(`skills:${sk.key}`)}</span>
-                    <span className="text-sm font-mono font-semibold text-indigo-600 w-8 text-right">
-                      {val}
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min={0}
-                    max={100}
-                    step={5}
-                    value={val}
-                    onChange={(e) => setSkill(sk.key, parseInt(e.target.value))}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-slate-400">
-                    <span>{t('discover:skill_none')}</span>
-                    <span>{t('discover:skill_expert')}</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="flex justify-between">
-            <button className="btn-secondary" onClick={() => setStep(0)}>
-              {t('discover:btn_prev')}
-            </button>
-            <button className="btn-primary" onClick={() => setStep(2)}>
-              {t('discover:btn_next')}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ── STEP 2: Soft Skills & Interests ── */}
-      {step === 2 && (
-        <div className="glass-card p-6 space-y-8 animate-slide-up">
-          <h2 className="text-lg font-semibold text-slate-900">
-            {t('discover:softskills_title')}
-          </h2>
-
-          <div>
-            <h3 className="text-sm font-semibold text-slate-700 mb-3">
-              {t('discover:softskills_label', { count: profile.soft_skills.length })}
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {SOFT_SKILLS.map((sk) => {
-                const selected = profile.soft_skills.includes(sk.key);
-                return (
-                  <button
-                    key={sk.key}
-                    onClick={() => toggleSoftSkill(sk.key)}
-                    className={`px-3 py-1.5 rounded-lg text-sm transition-all ${
-                      selected
-                        ? "bg-indigo-100 text-indigo-700 border border-indigo-300 shadow-sm"
-                        : "bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:text-slate-800"
-                    }`}
-                  >
-                    {t(`soft_skills:${sk.key}`)}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold text-slate-700 mb-3">
-              {t('discover:interests_label', { count: profile.interests.length })}
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {INTERESTS.map((int) => {
-                const selected = profile.interests.includes(int.key);
-                return (
-                  <button
-                    key={int.key}
-                    onClick={() => toggleInterest(int.key)}
-                    className={`px-3 py-1.5 rounded-lg text-sm transition-all ${
-                      selected
-                        ? "bg-violet-100 text-violet-700 border border-violet-300 shadow-sm"
-                        : "bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:text-slate-800"
-                    }`}
-                  >
-                    {t(`interests:${int.key}`)}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="flex justify-between">
-            <button className="btn-secondary" onClick={() => setStep(1)}>
-              {t('discover:btn_prev')}
-            </button>
-            <button className="btn-primary" onClick={() => setStep(3)}>
-              {t('discover:btn_next')}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ── STEP 3: Review ── */}
-      {step === 3 && (
-        <div className="glass-card p-6 space-y-6 animate-slide-up">
-          <h2 className="text-lg font-semibold text-slate-900">{t('discover:summary_title')}</h2>
-
-          <div className="flex items-center gap-2 p-4 bg-indigo-50 border border-indigo-200 rounded-xl">
-            <IconTarget size={16} className="text-indigo-500 flex-shrink-0" />
-            <p className="text-sm text-indigo-800">
-              {t('validate:target_label')}:{" "}
-              <strong className="text-indigo-900">{targetCareer}</strong>
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="text-slate-400">{t('discover:summary_hardskills')}</span>
-              <p className="text-slate-800 font-medium">
-                {t('discover:summary_hardskills_val', { count: Object.values(profile.skills).filter((v) => v > 0).length })}
-              </p>
-            </div>
-            <div>
-              <span className="text-slate-400">{t('discover:summary_softskills')}</span>
-              <p className="text-slate-800 font-medium">
-                {t('discover:summary_softskills_val', { count: profile.soft_skills.length })}
-              </p>
-            </div>
-            <div>
-              <span className="text-slate-400">{t('discover:summary_interests')}</span>
-              <p className="text-slate-800 font-medium">
-                {t('discover:summary_interests_val', { count: profile.interests.length })}
-              </p>
-            </div>
-          </div>
-
-          {error && (
-            <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
-              <IconAlertTriangle size={14} className="text-red-500 flex-shrink-0 mt-0.5" />
+          {error ? (
+            <p role="alert" className="mt-4 border border-[color:var(--alert)] px-3 py-2 text-[12.5px] text-alert">
               {error}
-            </div>
-          )}
+            </p>
+          ) : null}
 
-          <div className="flex justify-between">
-            <button className="btn-secondary" onClick={() => setStep(2)}>
-              {t('discover:btn_prev')}
-            </button>
+          <div className="rule-t mt-6 pt-5">
             <button
-              className="btn-primary"
-              onClick={handleSubmit}
-              disabled={loading}
+              type="button"
+              className="label !text-ink"
+              aria-expanded={profileOpen}
+              onClick={() => setProfileOpen((v) => !v)}
             >
-              {loading ? (
-                <>
-                  <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                  {t('validate:btn_validating')}
-                </>
-              ) : (
-                <>
-                  <IconSearch size={16} />
-                  {t('validate:btn_validate')}
-                </>
-              )}
+              {profileOpen ? '−' : '+'} {t('map.review')}
             </button>
+            {profileOpen ? (
+              <div className="mt-5">
+                <ContextStep profile={profile} patch={patchProfile} />
+              </div>
+            ) : null}
           </div>
         </div>
-      )}
 
-      {/* ── RESULTS ── */}
-      {step === 4 && result && (
-        <ValidationResult
-          result={result}
-          onReset={reset}
-          userSkills={profile.skills}
-          t={t}
-        />
-      )}
+        <div>
+          <div className="grid gap-8">
+            <div>
+              <span className="label">01 — {t('map.step.2')}</span>
+              <div className="mt-4">
+                <SkillsStep profile={profile} patch={patchProfile} />
+              </div>
+            </div>
+            <div className="rule-t pt-8">
+              <span className="label">02 — {t('map.step.3')}</span>
+              <div className="mt-4">
+                <SoftStep profile={profile} patch={patchProfile} />
+              </div>
+            </div>
+            <div className="rule-t pt-8">
+              <span className="label">03 — {t('map.step.4')}</span>
+              <div className="mt-4">
+                <InterestsStep profile={profile} patch={patchProfile} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  );
+  )
 }
 
-function ValidationResult({
-  result,
-  onReset,
-  userSkills,
-  t,
+function ValidateResult({
+  response,
+  onEdit,
 }: {
-  result: ValidateResponse;
-  onReset: () => void;
-  userSkills: Record<string, number>;
-  t: any;
+  response: ValidateResponse
+  onEdit: () => void
 }) {
-  const r = result.result;
-  const grad = getScoreGradient(r.hybrid_score);
+  const { t, lang } = useCopy()
+  const r = response.result
+  const gaps = r.critical_gaps ?? []
+  const strengths = r.fulfilled_strengths ?? []
+  const tone = scoreTone(r.hybrid_score)
 
   return (
-    <div className="space-y-6 animate-slide-up">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-slate-900">
-            {t('validate:result_title', { career: r.target_career })}
-          </h2>
-          <p className="text-sm text-slate-500 mt-0.5">
-            {r.confidence_message}
-          </p>
-        </div>
-        <button className="btn-secondary" onClick={onReset}>
-          <IconRefresh size={14} />
-          {t('common:validate_again')}
+    <div className="mx-auto max-w-sheet px-5 md:px-10">
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-7">
+        <Link
+          to="/catalog"
+          className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-ink hover:underline"
+        >
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 12 8"
+            className="h-2 w-2.5 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+          >
+            <path d="M11 4H1M4.2 1 1.2 4l3 3" />
+          </svg> {t('nav.catalog')}
+        </Link>
+        <button type="button" className="btn-quiet !py-1.5" onClick={onEdit}>
+          ← {t('result.again')}
         </button>
       </div>
 
-      {/* Score hero */}
-      <div className="glass-card p-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-          {/* Big score */}
-          <div className="text-center">
-            <div
-              className={`text-6xl font-black font-mono bg-gradient-to-r ${grad} bg-clip-text text-transparent`}
-            >
-              {r.hybrid_score.toFixed(0)}
+      <header className="grid gap-10 border-b border-[color:var(--rule)] pb-11 pt-7 md:grid-cols-[1.35fr_0.65fr] md:gap-16">
+        <div>
+          <span className="label">{t('validate.verdict')}</span>
+          <h1 className="display mt-3 text-[clamp(2.4rem,6.5vw,4.4rem)]">{r.target_career}</h1>
+          <p className="mt-5 max-w-[58ch] text-[14.5px] leading-relaxed text-ink-soft">
+            {r.narrative ?? r.confidence_message}
+          </p>
+          <div className="mt-6 flex flex-wrap gap-x-8 gap-y-3">
+            <div>
+              <span className="label">{t('result.rule')}</span>
+              <div className="num mt-1 text-lg">{r.rule_score.toFixed(1)}</div>
             </div>
-            <div className="text-sm text-slate-400">Hybrid Score / 100</div>
-            <div className="mt-2 w-32 h-2 bg-slate-100 rounded-full overflow-hidden mx-auto">
-              <div
-                className={`h-full bg-gradient-to-r ${grad} rounded-full`}
-                style={{ width: `${r.hybrid_score}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Hybrid badge */}
-          <div className="flex-1 w-full">
-            <HybridScoreBadge
-              ruleScore={r.rule_score}
-              mlProbability={r.ml_probability}
-              hybridScore={r.hybrid_score}
-              engineMode={r.engine_mode}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Score Breakdown */}
-      {r.score_breakdown && (
-        <div className="glass-card p-6">
-          <h3 className="section-title flex items-center gap-2">
-            <IconBarChart size={16} className="text-indigo-500" />
-            {t('discover:score_breakdown')}
-          </h3>
-          <div className="grid grid-cols-3 gap-3">
-            {[
-              {
-                label: t('discover:sb_hard'),
-                value: r.score_breakdown.hard_skill_score,
-                color: "text-indigo-600",
-                bg: "bg-indigo-50 border-indigo-100",
-              },
-              {
-                label: t('discover:sb_soft'),
-                value: r.score_breakdown.soft_skill_score,
-                color: "text-violet-600",
-                bg: "bg-violet-50 border-violet-100",
-              },
-              {
-                label: t('discover:sb_interest'),
-                value: r.score_breakdown.interest_score,
-                color: "text-emerald-600",
-                bg: "bg-emerald-50 border-emerald-100",
-              },
-            ].map((item) => (
-              <div
-                key={item.label}
-                className={`border rounded-xl p-4 text-center ${item.bg}`}
-              >
-                <div className={`text-2xl font-bold font-mono ${item.color}`}>
-                  {item.value.toFixed(0)}
-                </div>
-                <div className="text-xs text-slate-500 mt-0.5">
-                  {item.label}
-                </div>
+            <div>
+              <span className="label">{t('result.ml')}</span>
+              <div className="num mt-1 text-lg">
+                {r.ml_probability === null ? '—' : `${(r.ml_probability * 100).toFixed(1)}%`}
               </div>
-            ))}
+            </div>
+            <div>
+              <span className="label">{t('engine.type')}</span>
+              <div className="mt-1 text-[13px]">{r.engine_mode}</div>
+            </div>
           </div>
         </div>
-      )}
 
-      {/* Narrative */}
-      {r.narrative && (
-        <div className="glass-card p-6">
-          <h3 className="section-title flex items-center gap-2">
-            <IconLightbulb size={16} className="text-amber-500" />
-            Insight AI
-          </h3>
-          <p className="text-sm text-slate-700 leading-relaxed">
-            {r.narrative}
+        <div className="self-end md:border-l md:border-[color:var(--rule)] md:pl-10">
+          <ScoreFigure value={r.hybrid_score} label={t('result.hybrid')} size="lg" />
+          {r.score_breakdown ? (
+            <div className="mt-6 space-y-2.5">
+              {[
+                [t('result.hard'), r.score_breakdown.hard_skill_score],
+                [t('result.soft'), r.score_breakdown.soft_skill_score],
+                [t('result.interest'), r.score_breakdown.interest_score],
+              ].map(([label, value]) => (
+                <div key={String(label)}>
+                  <div className="flex items-baseline justify-between gap-3">
+                    <span className="text-[12px] text-ink-soft">{label}</span>
+                    <span className="num text-[11.5px] text-ink-faint">
+                      {(value as number).toFixed(1)}
+                    </span>
+                  </div>
+                  <div className="mt-1">
+                    <ScoreBar value={value as number} thickness={3} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
+          <p className={`mt-5 text-[11.5px] leading-relaxed ${tone === 'alert' ? 'text-alert' : 'text-ink-faint'}`}>
+            {r.confidence_message}
           </p>
         </div>
-      )}
+      </header>
 
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Fulfilled Strengths */}
-        {r.fulfilled_strengths.length > 0 && (
-          <div className="glass-card p-6">
-            <h3 className="section-title flex items-center gap-2">
-              <IconCheckCircle size={16} className="text-emerald-500" />
-              {t('discover:why_match')}
-            </h3>
-            <div className="space-y-3">
-              {r.fulfilled_strengths.map((item) => (
-                <SkillBar
-                  key={item.skill}
-                  label={t(`skills:${item.skill}`)}
-                  current={userSkills[item.skill] ?? item.current}
-                  required={item.required}
-                  weight={item.weight}
+      <div className="grid gap-10 py-10 md:grid-cols-[minmax(0,1fr)_20rem] md:gap-14">
+        <div>
+          {gaps.length > 0 ? (
+            <section className="rule-t py-8 first:border-t-0 first:pt-0">
+              <div className="flex items-baseline justify-between gap-4">
+                <span className="label !text-ink">{t('validate.gaps')}</span>
+                <span className="num text-[11px] text-ink-faint">{gaps.length}</span>
+              </div>
+              <ul className="mt-5 space-y-4">
+                {gaps.map((g) => (
+                  <li key={g.skill}>
+                    <div className="flex flex-wrap items-baseline justify-between gap-3">
+                      <span className="text-[14px] font-medium">{labelFor(g.skill, lang)}</span>
+                      <span className="num text-[12px]">
+                        <span className={scoreTone(g.current) === 'alert' ? 'text-alert' : 'text-ink-soft'}>
+                          {g.current}
+                        </span>
+                        <span className="text-ink-faint"> → {g.required}</span>
+                      </span>
+                    </div>
+                    <div className="mt-1.5 flex items-center gap-2">
+                      <ScoreBar value={g.current} thickness={3} tone="signal" />
+                      <span className="num w-8 shrink-0 text-right text-[11px] text-alert">
+                        −{g.gap ?? Math.max(0, g.required - g.current)}
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          {strengths.length > 0 ? (
+            <section className="rule-t py-8">
+              <span className="label !text-ink">{t('validate.strengths')}</span>
+              <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+                {strengths.map((s) => (
+                  <li key={s.skill} className="inline-flex items-baseline gap-2 text-[13px]">
+                    <span className="text-verify" aria-hidden="true">✓</span>
+                    <span className="text-ink-soft">{labelFor(s.skill, lang)}</span>
+                    <span className="num text-[11px] text-ink-faint">{s.current}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          {r.recommended_learning_order.length > 0 ? (
+            <section className="rule-t py-8">
+              <span className="label !text-ink">{t('validate.order')}</span>
+              <p className="mt-1.5 text-[12px] text-ink-faint">{t('validate.order.note')}</p>
+              <ol className="mt-5 space-y-4">
+                {r.recommended_learning_order.map((step, i) => {
+                  const gapItem = gaps.find((g) => g.skill === step.skill)
+                  const detail = gapItem
+                    ? lang === 'id'
+                      ? `Celah ${gapItem.gap ?? gapItem.required - gapItem.current} poin dari minimum ${gapItem.required}. Bobot prioritas ${gapItem.weight ?? 1}×.`
+                      : `Gap of ${gapItem.gap ?? gapItem.required - gapItem.current} points from the ${gapItem.required} threshold. Priority weight ${gapItem.weight ?? 1}×.`
+                    : step.reason
+                  return (
+                    <li key={`${step.skill}-${i}`} className="grid grid-cols-[2rem_1fr] gap-3">
+                      <span className="num pt-0.5 text-[11px] text-ink-faint">{pad2(i + 1)}</span>
+                      <div>
+                        <span className="text-[14px] font-medium">{labelFor(step.skill, lang)}</span>
+                        <p className="mt-0.5 text-[12.5px] leading-relaxed text-ink-faint">{detail}</p>
+                      </div>
+                    </li>
+                  )
+                })}
+              </ol>
+            </section>
+          ) : null}
+
+          {r.portfolio?.length ? (
+            <section className="rule-t py-8">
+              <span className="label !text-ink">{t('validate.portfolio')}</span>
+              <ul className="mt-4 space-y-2">
+                {r.portfolio.map((p, i) => (
+                  <li key={i} className="flex gap-3 text-[13.5px] leading-relaxed text-ink-soft">
+                    <span aria-hidden="true" className="mt-[0.6em] h-px w-4 shrink-0 bg-[color:var(--rule-strong)]" />
+                    {p}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          {r.shap_explanation ? (
+            <section className="rule-t py-8">
+              <span className="label !text-ink">{t('result.explain')}</span>
+              <div className="mt-4">
+                <ShapBar
+                  explanation={r.shap_explanation}
+                  positiveLabel={t('result.raise')}
+                  negativeLabel={t('result.lower')}
+                  note={t('result.explain.note')}
                 />
-              ))}
+              </div>
+            </section>
+          ) : null}
+        </div>
+
+        <aside>
+          <div className="panel p-5">
+            <span className="label">{t('validate.resources')}</span>
+            <div className="mt-3">
+              <span className="label !text-[9px]">{t('detail.free')}</span>
+              <div className="mt-1.5">
+                <ResourceList items={r.free_resources ?? []} emptyLabel={t('common.empty')} />
+              </div>
+            </div>
+            <div className="rule-t mt-4 pt-4">
+              <span className="label !text-[9px]">{t('detail.paid')}</span>
+              <div className="mt-1.5">
+                <ResourceList items={r.paid_resources ?? []} emptyLabel={t('common.empty')} />
+              </div>
             </div>
           </div>
-        )}
 
-        {/* Critical Gaps */}
-        {r.critical_gaps.length > 0 && (
-          <div className="glass-card p-6">
-            <h3 className="section-title flex items-center gap-2">
-              <IconAlertTriangle size={16} className="text-red-500" />
-              {t('discover:gaps')}
-            </h3>
-            <div className="space-y-3">
-              {r.critical_gaps.map((item) => (
-                <SkillBar
-                  key={item.skill}
-                  label={t(`skills:${item.skill}`)}
-                  current={userSkills[item.skill] ?? item.current}
-                  required={item.required}
-                  weight={item.weight}
-                  showGap
-                />
-              ))}
-            </div>
-          </div>
-        )}
+          <Link
+            to={`/catalog/${encodeURIComponent(r.target_career)}`}
+            className="btn-quiet mt-4 w-full !py-2.5"
+          >
+            {t('result.detail')} →
+          </Link>
+
+          {r.ethical_notice ? (
+            <p className="mt-4 text-[11px] leading-relaxed text-ink-faint">{r.ethical_notice}</p>
+          ) : null}
+        </aside>
       </div>
-
-      {/* Learning Roadmap Timeline */}
-      {r.recommended_learning_order.length > 0 && (
-        <div className="glass-card p-6">
-          <h3 className="section-title flex items-center gap-2">
-            <IconMap size={16} className="text-indigo-500" />
-            {t('validate:learning_roadmap')}
-          </h3>
-          <div className="relative">
-            {/* Timeline line */}
-            <div className="absolute left-[18px] top-6 bottom-0 w-0.5 bg-gradient-to-b from-indigo-400 to-slate-200" />
-            <div className="space-y-4">
-              {r.recommended_learning_order.map((step, i) => (
-                <div key={i} className="flex gap-4 relative">
-                  {/* Step dot */}
-                  <div
-                    className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 z-10 border-2 ${
-                      i === 0
-                        ? "bg-indigo-500 border-indigo-400 text-white"
-                        : "bg-white border-slate-300 text-slate-600"
-                    }`}
-                  >
-                    {i + 1}
-                  </div>
-                  {/* Content */}
-                  <div className="flex-1 pb-2">
-                    <p className="font-semibold text-slate-800 text-sm">
-                      {t(`skills:${step.skill}`)}
-                    </p>
-                    <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
-                      {step.reason}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Portfolio */}
-      {r.portfolio.length > 0 && (
-        <div className="glass-card p-6">
-          <h3 className="section-title flex items-center gap-2">
-            <IconBriefcase size={16} className="text-indigo-500" />
-            {t('validate:portfolio')}
-          </h3>
-          <ul className="space-y-2">
-            {r.portfolio.map((item, i) => (
-              <li
-                key={i}
-                className="flex items-start gap-2 text-sm text-slate-700"
-              >
-                <span className="text-indigo-500 mt-0.5">→</span>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* SHAP */}
-      {r.shap_explanation && (
-        <div className="glass-card p-6">
-          <h3 className="section-title flex items-center gap-2">
-            <IconMicroscope size={16} className="text-indigo-500" />
-            Explainable AI (SHAP)
-          </h3>
-          <ShapChart shap={r.shap_explanation} />
-        </div>
-      )}
-
-      {/* Resources */}
-      {(r.free_resources.length > 0 || r.paid_resources.length > 0) && (
-        <div className="grid sm:grid-cols-2 gap-6">
-          {r.free_resources.length > 0 && (
-            <div className="glass-card p-6">
-              <h3 className="section-title flex items-center gap-2">
-                <IconBookOpen size={16} className="text-indigo-500" />
-                {t('discover:free_resources')}
-              </h3>
-              <ul className="space-y-2">
-                {r.free_resources.map((res, i) => (
-                  <li key={i}>
-                    <ResourceItem
-                      resource={res}
-                      className="text-sm text-indigo-600 hover:text-indigo-700"
-                    />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {r.paid_resources.length > 0 && (
-            <div className="glass-card p-6">
-              <h3 className="section-title flex items-center gap-2">
-                <IconCreditCard size={16} className="text-amber-500" />
-                {t('discover:paid_resources')}
-              </h3>
-              <ul className="space-y-2">
-                {r.paid_resources.map((res, i) => (
-                  <li key={i}>
-                    <ResourceItem
-                      resource={res}
-                      className="text-sm text-amber-600 hover:text-amber-700"
-                    />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Ethical notice */}
-      {r.ethical_notice && (
-        <div className="flex items-start gap-2 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-500">
-          <IconInfo size={14} className="flex-shrink-0 mt-0.5" />
-          {r.ethical_notice}
-        </div>
-      )}
     </div>
-  );
+  )
 }
